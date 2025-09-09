@@ -1,0 +1,101 @@
+from uuid import UUID
+from fastapi import APIRouter, Depends, File, UploadFile, status
+from pydantic import UUID4
+from src.models.token_models import AccessTokenData
+from src.services import service_provider
+from src.root.database import db_dependency
+from src.models import user_model, services_model
+from src.services.authorization_service import get_user_verification_service
+
+router = APIRouter(tags=["Service Provider"], prefix="/api/v1/service-provider")
+
+
+@router.post(
+    "/",
+    description="Get single Service Provider",
+    response_model=user_model.UserProfileResponse,
+)
+async def create_service_provider(
+    db_conn: db_dependency,
+    service: services_model.CreateService,
+    token_info: AccessTokenData = Depends(get_user_verification_service),
+):
+    return await service_provider.create_service_provider(
+        db_conn=db_conn, values=service
+    )
+
+
+@router.get(
+    "/{id}",
+    description="Get single Service Provider",
+)
+async def get_service_provider(
+    db_conn: db_dependency,
+    id: UUID4,
+    _: AccessTokenData = Depends(get_user_verification_service),
+):
+    return await service_provider.get_service_provider_by_id(
+        db_conn=db_conn, service_provider_id=id
+    )
+
+
+@router.post(
+    "/search",
+    description="Get single Service Provider",
+    response_model=user_model.UserProfileResponse,
+)
+async def search_service_provider(
+    db_conn: db_dependency,
+    search_info: services_model.SearchServices,
+    _: AccessTokenData = Depends(get_user_verification_service),
+):
+    return await service_provider.search_service_providers_by_location_and_category(
+        db_conn=db_conn, search_query=search_info
+    )
+
+
+@router.patch(
+    "/{id}",
+    description="Update User Service",
+    response_model=user_model.UserProfileResponse,
+)
+async def update_service(
+    db_conn: db_dependency,
+    update_profile: services_model.UpdateServices,
+    id: UUID4,
+    token_info: AccessTokenData = Depends(get_user_verification_service),
+):
+    return await service_provider.update_service_provider_by_id(
+        db_conn=db_conn, service_provider_id=id, values=update_profile
+    )
+
+
+@router.patch(
+    "/picture/{service_id}",
+    description="Update User Profile",
+    response_model=user_model.UserProfileResponse,
+)
+async def update_user_profile_picture(
+    db_conn: db_dependency,
+    service_id: UUID,
+    catalogue_pic: list[UploadFile] = File(...),
+    token_info: AccessTokenData = Depends(get_user_verification_service),
+):
+    return await service_provider.update_catalogue_picture(
+        db_conn=db_conn, service_id=service_id, catalogue_pic=catalogue_pic
+    )
+
+
+@router.delete(
+    "/{id}",
+    description="Delete User Account",
+    status_code=status.HTTP_202_ACCEPTED,
+)
+async def delete_user_account(
+    db_conn: db_dependency,
+    id: UUID4,
+    token_info: AccessTokenData = Depends(get_user_verification_service),
+):
+    return await service_provider.delete_service_provider_by_id(
+        db_conn=db_conn, service_provider_id=id
+    )

@@ -1,0 +1,256 @@
+{
+  "Auto Mechanic": [
+    {
+      "Engine Services": [
+        "Oil Change",
+        "Engine Diagnostics",
+        "Timing Belt Replacement",
+        "Fuel Injection Service",
+        "Radiator Flush",
+        "Spark Plug Replacement"
+      ]
+    },
+    {
+      "Brake & Suspension": [
+        "Brake Pad Replacement",
+        "Shock Absorber Repair",
+        "Wheel Alignment",
+        "Suspension Tuning",
+        "Brake Fluid Change"
+      ]
+    },
+    {
+      "Transmission & Gearbox": [
+        "Transmission Repair",
+        "Clutch Replacement",
+        "Gearbox Servicing"
+      ]
+    }
+  ],
+  "Plumbing": [
+    {
+      "Pipe Installation & Repair": [
+        "Leak Detection",
+        "Pipe Replacement",
+        "Water Line Installation",
+        "Drain Cleaning",
+        "Sewer Line Repair"
+      ]
+    },
+    {
+      "Bathroom Fixtures": [
+        "Toilet Installation",
+        "Sink Repair",
+        "Shower Head Replacement",
+        "Bathtub Installation",
+        "Faucet Repair"
+      ]
+    },
+    {
+      "Water Heating Systems": [
+        "Heater Installation",
+        "Heater Repair",
+        "Solar Water Heater Setup"
+      ]
+    }
+  ],
+  "Electrical": [
+    {
+      "A.C Gas Filling": [
+        "A.C Repair and Installation",
+        "Refrigerator Repair",
+        "Freezer Repair",
+        "Water Dispenser",
+        "ColdRoom Servicing"
+      ]
+    },
+    {
+      "Appliances Electronics": [
+        "Washing Machine",
+        "Refrigerator",
+        "Freezer",
+        "Blender",
+        "Exercise Equipment",
+        "Gas/ Electric Cooker",
+        "Microwave",
+        "TV-Repair/ Mounting",
+        "Fan",
+        "Home Theater",
+        "Remote GateControl",
+        "e AUTO-Mechanic/A.C/Rew"
+      ]
+    },
+    {
+      "Wiring & Lighting": [
+        "House Wiring",
+        "Lighting Installation",
+        "Circuit Breaker Replacement",
+        "Outdoor Lighting",
+        "Smart Switch Setup"
+      ]
+    }
+  ],
+  "Cleaning": [
+    {
+      "Home Cleaning": [
+        "Deep Cleaning",
+        "Bathroom Sanitization",
+        "Kitchen Degreasing",
+        "Window Washing",
+        "Mattress Cleaning"
+      ]
+    },
+    {
+      "Commercial Cleaning": [
+        "Office Cleaning",
+        "Post-Construction Cleanup",
+        "Warehouse Cleaning",
+        "Retail Space Cleaning"
+      ]
+    },
+    {
+      "Specialty Services": [
+        "Pest Control",
+        "Carpet Shampooing",
+        "Upholstery Cleaning",
+        "Move-In/Move-Out Cleaning"
+      ]
+    }
+  ],
+  "Carpentry": [
+    {
+      "Furniture Making": [
+        "Custom Wardrobes",
+        "Kitchen Cabinets",
+        "Shelving Units",
+        "TV Consoles",
+        "Bed Frames"
+      ]
+    },
+    {
+      "Repairs & Installations": [
+        "Door Hanging",
+        "Wood Floor Repair",
+        "Window Frame Installation",
+        "Skirting Board Fixing"
+      ]
+    },
+    {
+      "Outdoor Carpentry": [
+        "Deck Building",
+        "Pergola Construction",
+        "Fence Installation"
+      ]
+    }
+  ],
+  "Painting": [
+    {
+      "Interior Painting": [
+        "Wall Painting",
+        "Ceiling Painting",
+        "Accent Walls",
+        "Wallpaper Installation",
+        "Textured Finishes"
+      ]
+    },
+    {
+      "Exterior Painting": [
+        "Fence Painting",
+        "Building Facade",
+        "Roof Coating",
+        "Gate Painting"
+      ]
+    },
+    { "Decorative Painting": ["Murals", "Stencil Art", "Faux Finishes"] }
+  ],
+  "Landscaping": [
+    {
+      "Garden Setup": [
+        "Lawn Installation",
+        "Planting & Mulching",
+        "Irrigation System Setup",
+        "Garden Design"
+      ]
+    },
+    {
+      "Maintenance": [
+        "Grass Cutting",
+        "Weeding",
+        "Tree Trimming",
+        "Hedge Shaping"
+      ]
+    },
+    {
+      "Hardscaping": [
+        "Stone Pathways",
+        "Retaining Walls",
+        "Outdoor Lighting",
+        "Water Features"
+      ]
+    }
+  ],
+  "Photography": [
+    {
+      "Event Photography": [
+        "Wedding Shoots",
+        "Birthday Parties",
+        "Corporate Events",
+        "Graduation Ceremonies"
+      ]
+    },
+    {
+      "Studio Services": [
+        "Portrait Sessions",
+        "Product Photography",
+        "Photo Editing",
+        "Family Shoots"
+      ]
+    },
+    {
+      "Creative Projects": [
+        "Fashion Photography",
+        "Documentary Shoots",
+        "Real Estate Photography"
+      ]
+    }
+  ],
+  "Hairdressing": [
+    {
+      "Hair Styling": [
+        "Braiding",
+        "Cornrows",
+        "Twists",
+        "Updos",
+        "Ponytails",
+        "Loc Styling"
+      ]
+    },
+    {
+      "Hair Cutting": [
+        "Men's Haircut",
+        "Women's Haircut",
+        "Children's Haircut",
+        "Fade & Taper",
+        "Beard Trimming"
+      ]
+    },
+    {
+      "Hair Treatment": [
+        "Deep Conditioning",
+        "Protein Treatment",
+        "Hot Oil Treatment",
+        "Scalp Detox",
+        "Dandruff Treatment"
+      ]
+    },
+    {
+      "Hair Coloring": [
+        "Full Dye",
+        "Highlights",
+        "Ombre",
+        "Root Touch-Up",
+        "Color Correction"
+      ]
+    }
+  ]
+}

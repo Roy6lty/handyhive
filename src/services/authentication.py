@@ -77,6 +77,12 @@ async def verify_OTP(db_conn: db_dependency, details: user_model.VerifyOTP):
             refresh_token = await token_service.create_refresh_token(
                 user_id=user.id, db_conn=db_conn
             )
+            update_token = user_model.Update2faCode(
+                two_fa_auth_code=None, two_fa_auth_expiry_time=0
+            )
+            _ = await user_handler.update_user_by_id(
+                db_conn=db_conn, user_id=user.id, values=update_token
+            )
 
             return authentication.LoginResponse(
                 id=user.id,
@@ -159,7 +165,7 @@ async def create_user(
         hashed_password = hash_password(user_data.hashed_password)
         referral_code = referal_service.generate_code()
 
-        user_model = await user_handler.create_user(
+        _ = await user_handler.create_user(
             user=user_data,
             db_conn=db_conn,
             hashed_password=hashed_password,
@@ -173,6 +179,7 @@ async def create_user(
         #     email_notification_service=email_notification_service,
         #     two_factor_auth_service=two_factor_auth_service,
         # )
+        await resend_2fa_code(email=user_data.email, db_conn=db_conn)
         return authentication.CreateUserResponse()
 
     raise error.UserAlreadyExistsException

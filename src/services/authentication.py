@@ -17,7 +17,7 @@ from authlib.integrations.starlette_client import OAuth
 from src.models import authentication
 from google.auth.transport import requests as google_oauth_request
 from google.oauth2 import id_token
-from src.models import user_model
+from src.models import user_model, orm_models
 from src.root import logger
 from src.services import referal_service
 
@@ -54,47 +54,50 @@ async def authenticate_user(db_conn: db_dependency, login: authentication.LoginS
         verified_password = verify_password(
             plain_password=login.password, hashed_password=user.hashed_password
         )
+        print(verified_password, login, login.password, user.hashed_password)
+        if not verified_password:
+            raise HTTPException(status_code=400, detail="incorrect email or password")
         return user
     except error.NotFoundError:
         raise HTTPException(status_code=400, detail="incorrect email or password")
 
 
+async def login_response(user: orm_models.UserTableModel, db_conn: db_dependency):
+
+    access_token_data = token_models.AccessTokenEncode(
+        id=str(user.id), is_active=user.is_active, role=user.role
+    )
+
+    access_token = token_service.create_access_token(access_token_data.model_dump())
+    refresh_token = await token_service.create_refresh_token(
+        user_id=user.id, db_conn=db_conn
+    )
+    update_token = user_model.Update2faCode(
+        two_fa_auth_code=None, two_fa_auth_expiry_time=0
+    )
+    _ = await user_handler.update_user_by_id(
+        db_conn=db_conn, user_id=user.id, values=update_token
+    )
+
+    return authentication.LoginResponse(
+        id=user.id,
+        first_name=user.first_name,
+        last_name=user.last_name,
+        access_token=access_token,
+        refresh_token=refresh_token,
+        role=user.role,
+        account_type=user.account_type,
+    )
+
+
 async def verify_OTP(db_conn: db_dependency, details: user_model.VerifyOTP):
     user = await user_handler.get_user_by_email(db_conn=db_conn, email=details.email)
 
-    print(user.two_fa_auth_expiry_time, int(time.time()))
     # check otp expiration
     if user.two_fa_auth_expiry_time > int(time.time()):
-        if user.two_fa_auth_code == details.otp:
-            # process login response
-            access_token_data = token_models.AccessTokenEncode(
-                id=user.id, is_active=user.is_active, role=user.role
-            )
+        return await login_response(db_conn=db_conn, user=user)
 
-            access_token = token_service.create_access_token(
-                access_token_data.model_dump()
-            )
-            refresh_token = await token_service.create_refresh_token(
-                user_id=user.id, db_conn=db_conn
-            )
-            update_token = user_model.Update2faCode(
-                two_fa_auth_code=None, two_fa_auth_expiry_time=0
-            )
-            _ = await user_handler.update_user_by_id(
-                db_conn=db_conn, user_id=user.id, values=update_token
-            )
-
-            return authentication.LoginResponse(
-                id=user.id,
-                first_name=user.first_name,
-                last_name=user.last_name,
-                access_token=access_token,
-                refresh_token=refresh_token,
-                role=user.role,
-                account_type=user.account_type,
-            )
-
-    return HTTPException(400, detail="incorrect or expired otp")
+    raise HTTPException(400, detail="incorrect or expired otp")
 
 
 async def token(
@@ -146,9 +149,10 @@ async def resend_2fa_code(email: str, db_conn: db_dependency):
 async def login(login: authentication.LoginSchema, db_conn: db_dependency):
     try:
         user = await authenticate_user(db_conn=db_conn, login=login)
-        if user:
+        if user.two_fa:
             await resend_2fa_code(email=login.email, db_conn=db_conn)
-        return {"message": "enter verification code"}
+            return authentication.TwoFAResponse()
+        return await login_response(db_conn=db_conn, user=user)
 
     except error.NotFoundError:
         raise HTTPException(status_code=400, detail="incorrect email or password")
@@ -296,7 +300,10 @@ async def change_password(
             plain_password=old_password,
             hashed_password=user_data.hashed_password,
         ):
-            raise error.IncorrectPasswordOrUsernameException
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="old password is incorrect",
+            )
         # update password
         hashed_password = hash_password(new_password)
         password_updated = user_model.UpdateUserProfile(hashed_password=hashed_password)

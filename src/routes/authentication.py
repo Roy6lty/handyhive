@@ -1,7 +1,6 @@
 from fastapi import APIRouter, Depends, Header, Request, status
-from fastapi.responses import JSONResponse, RedirectResponse
 from fastapi.security import OAuth2PasswordRequestForm
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel
 
 from src.root.database import db_dependency
 from src.services import authorization_service, authentication as authentication_service
@@ -126,7 +125,7 @@ async def logout(
     # response_model=authentication_model.LoginResponse,
     status_code=status.HTTP_202_ACCEPTED,
 )
-async def verify_2fa(
+async def verify_2fa_passcode(
     db_conn: db_dependency,
     verification: user_model.VerifyOTP,
 ):
@@ -139,20 +138,20 @@ async def verify_2fa(
     )
 
 
-@router.get(
-    "/verify/email",
-    summary="email verification code",
-    response_model=authentication_model.SuccessfulResponse,
-    status_code=status.HTTP_202_ACCEPTED,
-)
-async def get_verification_email(
-    db_conn: db_dependency,
-    email: EmailStr,
-):
-    return await authentication_service.resend_2fa_code(
-        db_conn=db_conn,
-        email=email,
-    )
+# @router.get(
+#     "/verify/email",
+#     summary="email verification code",
+#     response_model=authentication_model.SuccessfulResponse,
+#     status_code=status.HTTP_202_ACCEPTED,
+# )
+# async def get_verification_email(
+#     db_conn: db_dependency,
+#     email: EmailStr,
+# ):
+#     return await authentication_service.resend_2fa_code(
+#         db_conn=db_conn,
+#         email=email,
+#     )
 
 
 # @router.post(
@@ -180,9 +179,6 @@ async def get_verification_email(
 # async def reset_password(
 #     db_conn: db_dependency,
 #     email: str,
-#     email_service=Depends(get_email_notification_service),
-#     password_reset_service=Depends(get_password_service),
-#     two_factor_auth_service=Depends(get_two_factor_auth_service),
 # ):
 #     return await authentication_service.reset_password(
 #         email=email,

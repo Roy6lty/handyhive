@@ -1,20 +1,23 @@
 import uuid
 from uuid import UUID
 from src.root.database import db_dependency
-from src.models import services_model
+from src.models import service_provider_model
 from src.database.orms import user_orm
 from sqlalchemy import select, update, delete
+from sqlalchemy.orm import joinedload
 from src.custom_exceptions import error
 from src.models import orm_models
 
 
 async def create_service_provider(
-    db_conn: db_dependency, services: services_model.CreateService
+    service_id: uuid.UUID,
+    db_conn: db_dependency,
+    services: service_provider_model.CreateService,
 ):
     new_service = user_orm.ServiceProviderTable(
-        id=uuid.uuid4(),
+        id=service_id,
         category=list(services.services_provided.keys()),
-        **services.model_dump(exclude={"category", "coordinates"})
+        **services.model_dump(exclude={"category", "location"})
     )
     db_conn.add(new_service)
     await db_conn.commit()
@@ -24,12 +27,17 @@ async def create_service_provider(
 
 
 async def get_service_by_id(db_conn: db_dependency, service_id: UUID):
-    service = select(user_orm.ServiceProviderTable).where(
-        user_orm.ServiceProviderTable.id == service_id
+    service = (
+        select(user_orm.ServiceProviderTable)
+        .options(joinedload(user_orm.ServiceProviderTable.location))
+        .join(user_orm.LocationTable.provider)
+        .where(user_orm.ServiceProviderTable.id == service_id)
     )
+
     result = await db_conn.execute(service)
-    found_service = result.scalar_one_or_none()
+    found_service = result.unique().scalar_one_or_none()
     if found_service:
+        found_service.location
         return orm_models.ServiceProviderTableModel.model_validate(found_service)
 
     else:
@@ -37,7 +45,9 @@ async def get_service_by_id(db_conn: db_dependency, service_id: UUID):
 
 
 async def update_service_by_id(
-    db_conn: db_dependency, service_id: UUID, values: services_model.UpdateServices
+    db_conn: db_dependency,
+    service_id: UUID,
+    values: service_provider_model.UpdateServices,
 ):
     if values.services_provided is not None:
         values_json = values.model_dump(exclude_unset=True)

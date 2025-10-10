@@ -8,7 +8,6 @@ from src.custom_exceptions import error
 from src.models import orm_models
 from src.models import authentication
 from src.models import user_model
-from src.models.token_models import Roles
 
 
 async def create_user(

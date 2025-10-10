@@ -1,12 +1,15 @@
+import uuid
+from pydantic import field_validator
+from shapely.wkb import loads
 from src.root.abstract_base import AbstractBaseModel
-from pydantic import UUID4
 from datetime import datetime
 from src.models.token_models import Roles
-from uuid import UUID
+from typing import Union
+from geoalchemy2.elements import WKBElement
 
 
 class UserTableModel(AbstractBaseModel):
-    id: UUID4
+    id: uuid.UUID
     first_name: str
     last_name: str
     phone_no: str
@@ -19,7 +22,7 @@ class UserTableModel(AbstractBaseModel):
     two_fa_auth_code: str | None
     two_fa_auth_expiry_time: int = 0
     two_fa: bool = False
-    token_jit: UUID | None
+    token_jit: uuid.UUID | None
     profile_pic: str | None
     biodata: dict | None = None
     referral_code: str | None
@@ -27,13 +30,32 @@ class UserTableModel(AbstractBaseModel):
     last_updated: datetime
 
 
+class LocationTableModel(AbstractBaseModel):
+    id: uuid.UUID
+    service_provider_id: uuid.UUID
+    coordinates: str | None
+    longitude: float | str | None
+    latitude: float | str | None
+    # name: str | None
+    date_created: datetime
+    last_updated: datetime
+
+    @field_validator("coordinates", mode="before")
+    @classmethod
+    def parse_wkb(cls, value):
+        if isinstance(value, WKBElement):
+            point = loads(bytes(value.data))
+            return f"{point.y}, {point.x}"
+        return value
+
+
 class ServiceProviderTableModel(AbstractBaseModel):
-    id: UUID4
+    id: uuid.UUID
     name: str
     category: list | None
     zip_code: str | None
-    closing_hours: str | None
-    opening_hours: str | None
+    # closing_hours: str | None
+    opening_hours: dict | None
     services_provided: dict | None
     is_active: bool
     profile_pic: str | None
@@ -41,16 +63,56 @@ class ServiceProviderTableModel(AbstractBaseModel):
     rating: str | None
     address: dict | None
     tags: list | None
+    # location: list[LocationTableModel] | None = None
     date_created: datetime
     last_updated: datetime
 
 
-class LocationTableModel(AbstractBaseModel):
-    id: UUID4
-    service_provider_id: UUID4
-    coordinates: str | None
-    longitude: float | None
-    latitude: float | None
-    name: str | None
+class NotificationsTableModel(AbstractBaseModel):
+    id: uuid.UUID
+    title: str
+    body: str
+    image: str | None = None
+    timestamp: int
+    read: bool = False
+    user_id: str
+    date_created: datetime
+    last_updated: datetime
+
+
+class MessageTableModel(AbstractBaseModel):
+    id: uuid.UUID
+    user_id: uuid.UUID
+    sender_id: uuid.UUID
+    receiver_id: uuid.UUID
+    content: str
+    read: bool
+    edited: bool
+
+
+class BookingsTableModel(AbstractBaseModel):
+    id: uuid.UUID
+    customer_id: uuid.UUID
+    service_provider_id: uuid.UUID
+    price: int | None = 0
+    description: str
+    services_requested: dict
+    rating: int | None
+    review: str | None
+    date_created: datetime
+    last_updated: datetime
+
+
+class InvoiceTableModel(AbstractBaseModel):
+    id: uuid.UUID
+    customer_id: uuid.UUID
+    service_provider_id: uuid.UUID
+    status: str
+    due_date: datetime
+    price: uuid.UUID
+    description: str
+    services_requested: dict
+    rating: int | None
+    review: str | None
     date_created: datetime
     last_updated: datetime

@@ -29,6 +29,9 @@ class Settings(BaseSettings):
     # redis db
     # REDIS_BACKEND: RedisDsn
 
+    # redis database
+    REDIS_URL: str
+
     # Fastap- mail
     MAIL_USERNAME: str
     MAIL_PASSWORD: str

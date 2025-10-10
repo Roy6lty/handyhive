@@ -37,7 +37,7 @@ class UpdateUser(AbstractBaseModel):
 
 class UpdateUserProfile(UpdateUser):
     token_jit: UUID | None = None
-    hash_password: str | None = None
+    hashed_password: str | None = None
     is_active: bool | None = None
     role: Roles | None = None
 

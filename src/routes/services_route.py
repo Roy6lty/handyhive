@@ -1,8 +1,9 @@
 from fastapi import APIRouter, Depends
+from src.models import service_provider_model
 from src.models.token_models import AccessTokenData
 from src.services import service_management_service
 from src.root.database import db_dependency
-from src.models import user_model, services_model
+from src.models import user_model
 from src.services.authorization_service import get_user_verification_service
 import json
 

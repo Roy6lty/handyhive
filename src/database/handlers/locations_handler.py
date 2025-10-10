@@ -1,10 +1,9 @@
-from typing import Tuple
 import uuid
 from uuid import UUID
 from src.root.database import db_dependency
-from src.models import services_model
+from src.models import service_provider_model
 from src.database.orms import user_orm
-from sqlalchemy import Delete, Result, select, update, delete
+from sqlalchemy import select, update, delete, text
 from src.custom_exceptions import error
 from src.models import orm_models
 from geoalchemy2.shape import from_shape
@@ -12,7 +11,7 @@ from shapely.geometry import Point
 
 
 async def create_service_provider_location(
-    db_conn: db_dependency, services: services_model.CreateLocation
+    db_conn: db_dependency, services: service_provider_model.CreateLocation
 ):
     new_service = user_orm.LocationTable(
         id=uuid.uuid4(),
@@ -28,21 +27,21 @@ async def create_service_provider_location(
     await db_conn.commit()
     await db_conn.refresh(new_service)
 
-    return orm_models.ServiceProviderTableModel.model_validate(new_service)
+    return orm_models.LocationTableModel.model_validate(new_service)
 
 
 async def search_service_providers_by_radius(
     db_conn: db_dependency,
-    search_query: services_model.SearchServices,
-    search_radius: int = 5000,
+    search_query: service_provider_model.SearchServices,
+    search_radius: int = 50000,
 ):
 
     query = (
-        select(user_orm.LocationTable)
+        select(user_orm.ServiceProviderTable)
         .join(
-            user_orm.ServiceProviderTable,
-            user_orm.LocationTable.service_provider_id
-            == user_orm.ServiceProviderTable.id,
+            user_orm.LocationTable,
+            user_orm.ServiceProviderTable.id
+            == user_orm.LocationTable.service_provider_id,
         )
         .where(
             user_orm.LocationTable.coordinates.ST_DWithin(
@@ -55,7 +54,7 @@ async def search_service_providers_by_radius(
                 ),
                 search_radius,
             ),
-            user_orm.ServiceProviderTable.category.contains([search_query.category]),
+            user_orm.ServiceProviderTable.category.overlap(search_query.category),
         )
     )
 
@@ -63,14 +62,16 @@ async def search_service_providers_by_radius(
     service_providers = result.scalars().all()
     if len(service_providers) > 0:
         return [
-            orm_models.LocationTableModel.model_validate(provider)
+            orm_models.ServiceProviderTableModel.model_validate(provider)
             for provider in service_providers
         ]
     return []
 
 
 async def update_service_location_id(
-    db_conn: db_dependency, service_id: UUID, values: services_model.UpdateServices
+    db_conn: db_dependency,
+    service_id: UUID,
+    values: service_provider_model.UpdateServices,
 ):
     if values.services_provided is not None:
         values_json = values.model_dump(exclude_unset=True)

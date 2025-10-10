@@ -2,7 +2,6 @@ import json
 from time import time
 from typing import Any
 from datetime import datetime
-import redis
 import hashlib
 import asyncio
 import redis.asyncio as redis

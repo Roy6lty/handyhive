@@ -30,7 +30,7 @@ async def get_profile(
 )
 async def update_user_profile(
     db_conn: db_dependency,
-    update_profile: user_model.UpdateUserProfile,
+    update_profile: user_model.UpdateUser,
     token_info: AccessTokenData = Depends(get_user_verification_service),
 ):
     return await profile_service.update_user_profile(
@@ -50,6 +50,19 @@ async def update_user_profile_picture(
 ):
     return await profile_service.update_profle_picture(
         db_conn=db_conn, user_id=token_info.id, profile_pic=profile_pic
+    )
+
+
+@router.post(
+    "/user-preferences", description="Update User Notification Setting", status_code=200
+)
+async def update_user_notifications(
+    db_conn: db_dependency,
+    notifications: user_model.NotificationSchema,
+    token_info: AccessTokenData = Depends(get_user_verification_service),
+):
+    return await profile_service.update_notifications(
+        db_conn=db_conn, notifications=notifications, user_id=token_info.id
     )
 
 

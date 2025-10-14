@@ -50,3 +50,13 @@ class OpenIDUserDataModel(AbstractBaseModel):
     first_name: str
     last_name: str
     profile_pic: str
+
+
+class PasswordResetCodeSchema(AbstractBaseModel):
+    email: str
+
+
+class PasswordResetSchema(AbstractBaseModel):
+    email: str
+    OTP: str
+    new_password: str

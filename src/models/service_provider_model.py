@@ -13,6 +13,7 @@ class Address(AbstractBaseModel):
     street: str
     state: str
     local_government: str
+    default: bool = False
 
 
 class Coordinates(AbstractBaseModel):
@@ -29,7 +30,7 @@ class CreateService(AbstractBaseModel):
     name: str
     category: list[str]
     opening_hours: dict[str, dict]  # day: opening time
-    address: Address
+    address: list[Address]
     services_provided: dict[str, list[str]]
     tags: list
     location: Coordinates | None = None

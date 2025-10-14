@@ -9,3 +9,8 @@ class CreateNotifications(AbstractBaseModel):
     timestamp: int
     read: bool = False
     user_id: str
+
+
+class CreateNotificationsPreference(AbstractBaseModel):
+    push_notifications: bool | None = None
+    promotional_notifications: dict | None = None

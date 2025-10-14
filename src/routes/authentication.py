@@ -175,18 +175,26 @@ async def verify_2fa_passcode(
 #     )
 
 
-# @router.post("/password/reset", status_code=status.HTTP_202_ACCEPTED)
-# async def reset_password(
-#     db_conn: db_dependency,
-#     email: str,
-# ):
-#     return await authentication_service.reset_password(
-#         email=email,
-#         db_conn=db_conn,
-#         email_service=email_service,
-#         password_service=password_reset_service,
-#         two_factor_auth_service=two_factor_auth_service,
-#     )
+@router.post("/password/reset/otp", status_code=status.HTTP_202_ACCEPTED)
+async def get_password_reset_otp(
+    db_conn: db_dependency, reset_schema: authentication_model.PasswordResetCodeSchema
+):
+    return await authentication_service.resend_2fa_code(
+        email=reset_schema.email, db_conn=db_conn, subject="Password Reset OTP"
+    )
+
+
+@router.post("/password/reset", status_code=status.HTTP_202_ACCEPTED)
+async def reset_password(
+    db_conn: db_dependency,
+    reset_schema: authentication_model.PasswordResetSchema,
+):
+    return await authentication_service.reset_password(
+        email=reset_schema.email,
+        db_conn=db_conn,
+        new_password=reset_schema.new_password,
+        OTP=reset_schema.OTP,
+    )
 
 
 # @router.post(

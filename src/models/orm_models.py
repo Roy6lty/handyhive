@@ -4,7 +4,6 @@ from shapely.wkb import loads
 from src.root.abstract_base import AbstractBaseModel
 from datetime import datetime
 from src.models.token_models import Roles
-from typing import Union
 from geoalchemy2.elements import WKBElement
 
 
@@ -13,6 +12,8 @@ class UserTableModel(AbstractBaseModel):
     first_name: str
     last_name: str
     phone_no: str
+    address: list[dict] | None
+    social_links: list[dict] | None
     country_code: str
     role: Roles
     hashed_password: str
@@ -26,6 +27,8 @@ class UserTableModel(AbstractBaseModel):
     profile_pic: str | None
     biodata: dict | None = None
     referral_code: str | None
+    push_notifications: bool | None = None
+    promotional_notifications: dict | None
     date_created: datetime
     last_updated: datetime
 
@@ -76,6 +79,14 @@ class NotificationsTableModel(AbstractBaseModel):
     timestamp: int
     read: bool = False
     user_id: str
+    date_created: datetime
+    last_updated: datetime
+
+
+class NotificationsPreferenceTableModel(AbstractBaseModel):
+    id: uuid.UUID
+    push_notifications: bool
+    promotional_notifications: dict
     date_created: datetime
     last_updated: datetime
 

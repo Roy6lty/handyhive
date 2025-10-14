@@ -36,7 +36,7 @@ class UserTable(AbstractBase):
     first_name: Mapped[str] = mapped_column(String, nullable=True)
     last_name: Mapped[str] = mapped_column(String, nullable=True)
     referral_code: Mapped[str] = mapped_column(String, nullable=True)
-    address: Mapped[str] = mapped_column(String, nullable=True)
+    address: Mapped[str] = mapped_column(ARRAY(JSONB), nullable=True)
     phone_no: Mapped[str] = mapped_column(String, nullable=True)
     country_code: Mapped[str] = mapped_column(String, nullable=True)
     social_links: Mapped[str] = mapped_column(JSONB, nullable=True)
@@ -52,6 +52,8 @@ class UserTable(AbstractBase):
     profile_pic: Mapped[str] = mapped_column(String, nullable=True)
     referral_code: Mapped[str] = mapped_column(String, nullable=True)
     account_type: Mapped[str] = mapped_column(String)
+    push_notifications: Mapped[bool] = mapped_column(Boolean, nullable=True)
+    promotional_notifications: Mapped[dict] = mapped_column(JSONB, nullable=True)
     message: Mapped[list["MessagesTable"]] = relationship(back_populates="user")
 
     __table_args__ = (
@@ -71,7 +73,7 @@ class ServiceProviderTable(AbstractBase):
         UUID(as_uuid=True), primary_key=True, default=uuid4
     )
     name: Mapped[str] = mapped_column(String, nullable=True)
-    address: Mapped[str] = mapped_column(JSONB, nullable=True)
+    address: Mapped[str] = mapped_column(ARRAY(JSONB), nullable=True)
     category: Mapped[str] = mapped_column(ARRAY(String), nullable=True)
     zip_code: Mapped[str] = mapped_column(String, nullable=True)
     # closing_hours: Mapped[str] = mapped_column(String, nullable=True)
@@ -157,7 +159,8 @@ class NotificationPreferencesTable(AbstractBase):
         UUID(as_uuid=True), primary_key=True, default=uuid4
     )
     user_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), nullable=True)
-    push_notification: Mapped[dict] = mapped_column(JSONB, nullable=True)
+
+    push_notification: Mapped[bool] = mapped_column(Boolean, nullable=True)
     promotional_notification: Mapped[dict] = mapped_column(JSONB, nullable=True)
 
 

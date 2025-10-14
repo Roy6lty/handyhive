@@ -8,7 +8,7 @@ from src.routes.services_route import router as service_router
 from src.routes.message_route import router as message_router
 from src.routes.actors.customers.booking_route import router as customer_router
 from src.routes.actors.customers.customer_invoice_route import router as invoice_router
-
+from src.routes.customer_care_route import router as customer_care_router
 
 api_router = APIRouter()
 
@@ -19,3 +19,4 @@ api_router.include_router(router=profile_route)
 api_router.include_router(router=message_router)
 api_router.include_router(router=customer_router)
 api_router.include_router(router=invoice_router)
+api_router.include_router(router=customer_care_router)

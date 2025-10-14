@@ -45,6 +45,21 @@ async def update_user_profile(
         raise HTTPException(status_code=404, detail="user not found")
 
 
+async def update_notifications(
+    db_conn: db_dependency, user_id: UUID, notifications: user_model.NotificationSchema
+):
+    values = user_model.UpdateUserProfile(
+        push_notifications=notifications.push_notifications,
+        promotional_notifications=notifications.promotional_notifications,
+    )
+    try:
+        _ = await user_handler.update_user_by_id(
+            db_conn=db_conn, user_id=user_id, values=values
+        )
+    except error.NotFoundError:
+        raise HTTPException(status_code=404, detail="user not found")
+
+
 async def delete_user_profile(db_conn: db_dependency, user_id: UUID):
     try:
         await user_handler.delete_user_by_id(db_conn=db_conn, user_id=user_id)

@@ -1,122 +1,57 @@
+import uuid
+from fastapi import APIRouter, Depends, WebSocket
+from src.models.token_models import AccessTokenData
+from src.root.database import db_dependency
+from src.services.authorization_service import get_user_verification_service_ws
 import json
 from time import time
 from typing import Any
-from datetime import datetime
 import hashlib
 import asyncio
-import redis.asyncio as redis
 from fastapi import (
     APIRouter,
     Depends,
-    status,
     WebSocket,
     WebSocketDisconnect,
 )
-from uuid import UUID
 from src.models.token_models import AccessTokenData
 from src.services import message_service
 from src.root.database import db_dependency
 from src.models import message_model
 from src.services.authorization_service import (
-    get_user_verification_service,
     get_user_verification_service_ws,
 )
 from src.database.handlers import user_handler, message_handler
 from exponent_server_sdk import PushClient
+import redis.asyncio as redis
 from src.root.env_settings import env
 
-
-router = APIRouter(tags=["Message"], prefix="/api/v1/messages")
-
+router = APIRouter(tags=["Customer Care"], prefix="/api/v1/customer-care")
 r = redis.Redis.from_url(env.REDIS_URL)
 
 
-@router.get(
-    "/{receiver_id}",
-    description="Get User Messages Data",
-    response_model=list[message_model.MessageResponse],
-)
-async def get_message(
-    db_conn: db_dependency,
-    last_sent: datetime | None = None,
-    receiver_id=UUID,
-    token_info: AccessTokenData = Depends(get_user_verification_service),
-):
-    if last_sent is None:
-        last_sent = datetime(2000, 1, 1, 0, 0, 0)
-    return await message_service.get_user_messages(
-        db_conn=db_conn,
-        user_id=token_info.id,
-        receiver_id=receiver_id,
-        last_sent=last_sent,
-    )
+@router.get("/")
+async def get_customer_care():
+    return {
+        "phone_number": "xxx-xxx-xxxx",
+        "email": "xxx@xxx.com",
+    }
 
 
-@router.get(
-    "/",
-    description="Get User Messages Data",
-    # response_model=list[message_model.MessageResponse],
-)
-async def get_all_last_message(
-    db_conn: db_dependency,
-    token_info: AccessTokenData = Depends(get_user_verification_service),
-):
-
-    return await message_service.get_last_messages(
-        db_conn=db_conn,
-        user_id=token_info.id,
-    )
-
-
-@router.post(
-    "",
-    description="Send Messages",
-)
-async def send_message(
-    db_conn: db_dependency,
-    new_message: message_model.MessageDTO,
-    token_info: AccessTokenData = Depends(get_user_verification_service),
-):
-    return await message_service.send_message(
-        db_conn=db_conn, user_id=token_info.id, new_message=new_message
-    )
-
-
-@router.patch("/{message_id}/status", description="update message read status")
-async def update_message_status(db_conn: db_dependency, message_id: UUID):
-    return await message_service.update_message_read_status(
-        db_conn=db_conn, id=message_id
-    )
-
-
-@router.delete(
-    "",
-    description="Delete Message",
-    status_code=status.HTTP_202_ACCEPTED,
-)
-async def delete_user_account(
-    db_conn: db_dependency,
-    message_id: UUID,
-    _: AccessTokenData = Depends(get_user_verification_service),
-):
-    return await message_service.delete_messages(db_conn=db_conn, message_id=message_id)
-
-
-@router.websocket("/{receiver_id}/chat")
-async def websocket_endpoint(
+@router.websocket("customer-care/chat")
+async def customer_care_chat(
     websocket: WebSocket,
-    receiver_id: UUID,
+    receiver_id: uuid.UUID,
     db_conn: db_dependency,
     token_info: AccessTokenData = Depends(get_user_verification_service_ws),
 ):
-    # send me the time of your last message
+
     await websocket.accept()
     messages = await message_service.get_user_messages(
         db_conn=db_conn, user_id=token_info.id, receiver_id=receiver_id
     )
     user = await user_handler.get_user_by_id(db_conn=db_conn, user_id=token_info.id)
     profile_pic = user.profile_pic
-    print(messages)
     push_client = PushClient()
     listener_task, channel_name = None, None
 

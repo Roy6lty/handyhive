@@ -118,7 +118,9 @@ async def token(
     return token_models.AccessTokenResponse(access_token=access_token)
 
 
-async def resend_2fa_code(email: str, db_conn: db_dependency):
+async def resend_2fa_code(
+    email: str, db_conn: db_dependency, subject: str = "two factor authentication"
+):
     try:
         user = await user_handler.get_user_by_email(db_conn=db_conn, email=email)
         if user:
@@ -132,7 +134,7 @@ async def resend_2fa_code(email: str, db_conn: db_dependency):
             )
             if updated_user:
                 email_schema = email_model.EmailSchema(
-                    subject="two factor authentication", recipients=[user.email]
+                    subject=subject, recipients=[user.email]
                 )
 
                 # send email
@@ -144,6 +146,31 @@ async def resend_2fa_code(email: str, db_conn: db_dependency):
 
     except error.NotFoundError:
         raise HTTPException(status_code=400, detail="incorrect email or password")
+
+
+async def reset_password(
+    email: str, new_password: str, db_conn: db_dependency, OTP: str
+):
+    user = await user_handler.get_user_by_email(db_conn=db_conn, email=email)
+    if user:
+        if user.two_fa_auth_code == OTP and user.two_fa_auth_expiry_time > int(
+            time.time()
+        ):
+            hashed_password = hash_password(new_password)
+            update_token = user_model.UpdateUserProfile(hashed_password=hashed_password)
+            _ = await user_handler.update_user_by_id(
+                db_conn=db_conn, user_id=user.id, values=update_token
+            )
+            update_token = user_model.Update2faCode(
+                two_fa_auth_code=None, two_fa_auth_expiry_time=int(time.time())
+            )
+            _ = await user_handler.update_user_by_id(
+                db_conn=db_conn, user_id=user.id, values=update_token
+            )
+            return authentication.SuccessfulResponse()
+        raise HTTPException(status_code=400, detail=f"incorrect or expired OTP")
+
+    raise HTTPException(status_code=400, detail="email does not exist")
 
 
 async def login(login: authentication.LoginSchema, db_conn: db_dependency):

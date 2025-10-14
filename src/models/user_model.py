@@ -40,7 +40,7 @@ class UpdateUser(AbstractBaseModel):
     profile_pic: str | None = None
     two_fa: bool | None = None
     address: list[Address] | None = None
-    social_links: list[SocialLinks]
+    social_links: list[SocialLinks] | None = None
 
 
 class UpdateUserProfile(UpdateUser):

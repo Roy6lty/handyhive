@@ -50,6 +50,8 @@ class UpdateUserProfile(UpdateUser):
     role: Roles | None = None
     push_notifications: bool | None = None
     promotional_notifications: dict | None = None
+    two_fa_auth_code: str | None = None
+    two_fa_auth_expiry_time: int = 0
 
 
 class VerifyOTP(AbstractBaseModel):

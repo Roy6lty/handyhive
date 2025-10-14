@@ -1,11 +1,17 @@
+import json
+import time
+import uuid
+import hashlib
+import asyncio
+import valkey
+from typing import Any
 import valkey.exceptions
 from fastapi import WebSocket
 from src.root.database import db_dependency
 from src.models import message_model
-from src.database.handlers import message_handler
+from src.database.handlers import message_handler, user_handler
 from uuid import UUID, uuid4
 from datetime import datetime
-import valkey
 
 r = valkey.Valkey(host="localhost", port=6379, db=0)
 
@@ -84,3 +90,83 @@ async def chat_message(
             print("Consumer group already exists")
         else:
             raise e
+
+
+async def listener(websocket: WebSocket, pubsub: Any, channel_name: str, user_id: str):
+    try:
+        async for message in pubsub.listen():
+            if message["type"] == "message":
+                data = message["data"]
+                if isinstance(data, bytes):
+                    data = data.decode("utf-8")
+                    data_json = json.loads(data)
+                    if data_json["sender"] != str(user_id):
+                        content = data_json["content"]
+                        await websocket.send_text(content)
+    except asyncio.CancelledError:
+        await pubsub.unsubscribe(channel_name)
+
+
+async def web_socket_message(
+    websocket: WebSocket,
+    db_conn: db_dependency,
+    user_id: uuid.UUID,
+    receiver_id: uuid.UUID,
+):
+    await websocket.accept()
+    messages = await get_user_messages(
+        db_conn=db_conn, user_id=user_id, receiver_id=receiver_id
+    )
+    user = await user_handler.get_user_by_id(db_conn=db_conn, user_id=user_id)
+    profile_pic = user.profile_pic
+    listener_task, channel_name = None, None
+
+    try:
+        for message in messages:
+            await websocket.send_text(message.model_dump_json())
+
+        sorted_uuids = sorted([str(receiver_id), str(token_info.id)])
+        combined = "".join(sorted_uuids)
+        pair_id = hashlib.sha256(combined.encode()).hexdigest()
+        pubsub = r.pubsub()
+        channel_name = pair_id
+        await pubsub.subscribe(channel_name)
+
+        listener_task = asyncio.create_task(
+            listener(
+                websocket=websocket,
+                pubsub=pubsub,
+                channel_name=channel_name,
+                user_id=str(user_id),
+            )
+        )
+
+        while True:
+            # check if use is online
+            data = await websocket.receive_text()
+            pub_message = {
+                "sender": str(user_id),
+                "content": data,
+                "timestamp": int(time.time() * 1000),
+            }
+            serialized = json.dumps(pub_message)
+            try:
+                await r.publish(channel_name, serialized)
+            except Exception as e:
+                print("Publish failed:", e)
+
+            await message_handler.create_message(
+                db_conn=db_conn,
+                message=message_model.MessageCreate(
+                    content=data,
+                    sender_id=receiver_id,
+                    receiver_id=user_id,
+                    profile_pic=profile_pic,
+                ),
+            )
+    except WebSocketDisconnect:
+        if listener_task:
+            listener_task.cancel()
+        if channel_name:
+            await pubsub.unsubscribe(channel_name)
+        await r.close()

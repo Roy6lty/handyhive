@@ -19,6 +19,7 @@ class LoginResponse(AbstractBaseModel):
     first_name: str
     last_name: str
     account_type: str
+    is_active: bool
     role: user_model.Roles
 
 

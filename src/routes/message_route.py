@@ -109,13 +109,14 @@ async def websocket_endpoint(
     db_conn: db_dependency,
     token_info: AccessTokenData = Depends(get_user_verification_service_ws),
 ):
+
     # send me the time of your last message
     await websocket.accept()
     messages = await message_service.get_user_messages(
         db_conn=db_conn, user_id=token_info.id, receiver_id=receiver_id
     )
     user = await user_handler.get_user_by_id(db_conn=db_conn, user_id=token_info.id)
-    profile_pic = user.profile_pic
+    profile_pic: str | None = user.profile_pic
     print(messages)
     push_client = PushClient()
     listener_task, channel_name = None, None

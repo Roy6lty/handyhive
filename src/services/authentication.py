@@ -54,7 +54,6 @@ async def authenticate_user(db_conn: db_dependency, login: authentication.LoginS
         verified_password = verify_password(
             plain_password=login.password, hashed_password=user.hashed_password
         )
-        print(verified_password, login, login.password, user.hashed_password)
         if not verified_password:
             raise HTTPException(status_code=400, detail="incorrect email or password")
         return user
@@ -86,16 +85,27 @@ async def login_response(user: orm_models.UserTableModel, db_conn: db_dependency
         access_token=access_token,
         refresh_token=refresh_token,
         role=user.role,
+        is_active=user.is_active,
         account_type=user.account_type,
     )
 
 
 async def verify_OTP(db_conn: db_dependency, details: user_model.VerifyOTP):
     user = await user_handler.get_user_by_email(db_conn=db_conn, email=details.email)
+    if user:
 
+        if (user.two_fa_auth_code == details.otp) and (
+            user.two_fa_auth_expiry_time > int(time.time())
+        ):
+
+            update_token = user_model.UpdateUserProfile(
+                is_active=True, two_fa_auth_expiry_time=0
+            )
+            _ = await user_handler.update_user_by_id(
+                db_conn=db_conn, user_id=user.id, values=update_token
+            )
+            return await login_response(db_conn=db_conn, user=user)
     # check otp expiration
-    if user.two_fa_auth_expiry_time > int(time.time()):
-        return await login_response(db_conn=db_conn, user=user)
 
     raise HTTPException(400, detail="incorrect or expired otp")
 
@@ -202,14 +212,6 @@ async def create_user(
             hashed_password=hashed_password,
             referral_code=referral_code,
         )
-        # send verification mail
-
-        # await handle_email_verification(
-        #     user_data=user_model,
-        #     db_conn=db_conn,
-        #     email_notification_service=email_notification_service,
-        #     two_factor_auth_service=two_factor_auth_service,
-        # )
         await resend_2fa_code(email=user_data.email, db_conn=db_conn)
         return authentication.CreateUserResponse()
 
@@ -294,6 +296,7 @@ async def process_google_token_login(
             first_name=db_user.first_name,
             last_name=db_user.last_name,
             role=db_user.role,
+            is_active=db_user.is_active,
             account_type=db_user.account_type,
         )
 

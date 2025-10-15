@@ -146,7 +146,7 @@ async def verify_2fa_passcode(
 )
 async def get_verification_email_code(
     db_conn: db_dependency,
-    email: EmailStr,
+    email: str,
 ):
     return await authentication_service.resend_2fa_code(
         db_conn=db_conn,

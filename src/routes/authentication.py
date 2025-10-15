@@ -138,41 +138,20 @@ async def verify_2fa_passcode(
     )
 
 
-# @router.get(
-#     "/verify/email",
-#     summary="email verification code",
-#     response_model=authentication_model.SuccessfulResponse,
-#     status_code=status.HTTP_202_ACCEPTED,
-# )
-# async def get_verification_email(
-#     db_conn: db_dependency,
-#     email: EmailStr,
-# ):
-#     return await authentication_service.resend_2fa_code(
-#         db_conn=db_conn,
-#         email=email,
-#     )
-
-
-# @router.post(
-#     "/verify/email",
-#     summary="email verification",
-#     response_model=SuccessfulResponse,
-#     status_code=status.HTTP_202_ACCEPTED,
-# )
-# async def verify_email(
-#     db_conn: db_dependency,
-#     verification: VerificationCodeSchema,
-#     two_factor_auth_service: TwoFactorAuthenticationService = Depends(
-#         get_two_factor_auth_service
-#     ),
-# ):
-#     return await authentication_service.verify_email_code(
-#         db_conn=db_conn,
-#         email=verification.email,
-#         verification_code=verification.verification_code,
-#         two_factor_authentication=two_factor_auth_service,
-#     )
+@router.get(
+    "/verify/email",
+    summary="email verification code",
+    response_model=authentication_model.SuccessfulResponse,
+    status_code=status.HTTP_202_ACCEPTED,
+)
+async def get_verification_email_code(
+    db_conn: db_dependency,
+    email: EmailStr,
+):
+    return await authentication_service.resend_2fa_code(
+        db_conn=db_conn,
+        email=email,
+    )
 
 
 @router.post("/password/reset/otp", status_code=status.HTTP_202_ACCEPTED)
@@ -240,3 +219,24 @@ async def change_password(
         db_conn=db_conn,
         user_id=user_info.id,
     )
+
+
+# @router.post(
+#     "/verify/email",
+#     summary="email verification",
+#     response_model=SuccessfulResponse,
+#     status_code=status.HTTP_202_ACCEPTED,
+# )
+# async def verify_email(
+#     db_conn: db_dependency,
+#     verification: VerificationCodeSchema,
+#     two_factor_auth_service: TwoFactorAuthenticationService = Depends(
+#         get_two_factor_auth_service
+#     ),
+# ):
+#     return await authentication_service.verify_email_code(
+#         db_conn=db_conn,
+#         email=verification.email,
+#         verification_code=verification.verification_code,
+#         two_factor_authentication=two_factor_auth_service,
+#     )

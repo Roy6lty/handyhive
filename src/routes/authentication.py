@@ -148,10 +148,11 @@ async def get_verification_email_code(
     db_conn: db_dependency,
     email: str,
 ):
-    return await authentication_service.resend_2fa_code(
+    await authentication_service.resend_2fa_code(
         db_conn=db_conn,
         email=email,
     )
+    return authentication_model.SuccessfulResponse
 
 
 @router.post("/password/reset/otp", status_code=status.HTTP_202_ACCEPTED)

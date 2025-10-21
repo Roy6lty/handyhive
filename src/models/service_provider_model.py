@@ -10,6 +10,8 @@ class AllCategory(AbstractBaseModel):
 
 
 class Address(AbstractBaseModel):
+    longitude: float
+    latitude: float
     street: str
     state: str
     local_government: str

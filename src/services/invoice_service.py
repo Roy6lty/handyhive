@@ -38,8 +38,10 @@ async def update_invoice(
 ):
     ## Check if the status is on ACCEPTED or REJECTED
 
-    invoice_found = await get_invoice_by_id(db_conn=db_conn, invoice_id=invoice_id)
-    if invoice_found.status != invoice_models.InvoiceStatus.PENDING:
+    invoice_found = await invoice_handler.get_invoice_by_id(
+        db_conn=db_conn, invoice_id=invoice_id
+    )
+    if invoice_found.status != invoice_models.Status.PENDING:
         raise HTTPException(status_code=400, detail="Cannot update accepted invoice")
     return await invoice_handler.update_invoice_by_id(
         db_conn=db_conn, invoice_id=invoice_id, values=invoice

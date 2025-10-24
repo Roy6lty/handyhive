@@ -13,11 +13,10 @@ async def create_invoice(
     invoice: invoice_models.CreateInvoiceModel,
     user_id: uuid.UUID,
 ) -> orm_models.InvoiceTableModel:
-    print("Hello")
     new_invoice = user_orm.InvoiceTable(
         id=uuid.uuid4(),
         service_provider_id=user_id,
-        status=invoice_models.InvoiceStatus.PENDING,
+        status=invoice_models.Status.PENDING,
         **invoice.model_dump()
     )
     db_conn.add(new_invoice)
@@ -30,9 +29,22 @@ async def create_invoice(
 async def get_invoice_by_provider_id(
     db_conn: db_dependency, invoice_id: UUID, provider_id: uuid.UUID
 ):
-    booking = select(user_orm.BookingsTable).where(
+    invoice = select(user_orm.BookingsTable).where(
         user_orm.InvoiceTable.id == invoice_id
         and user_orm.InvoiceTable.service_provider_id == provider_id
+    )
+    result = await db_conn.execute(invoice)
+    found_service = result.scalar_one_or_none()
+    if found_service:
+        return orm_models.InvoiceTableModel.model_validate(found_service)
+
+    else:
+        raise error.NotFoundError
+
+
+async def get_invoice_by_id(invoice_id: uuid.UUID, db_conn: db_dependency):
+    booking = select(user_orm.InvoiceTable).where(
+        user_orm.InvoiceTable.id == invoice_id
     )
     result = await db_conn.execute(booking)
     found_service = result.scalar_one_or_none()
@@ -92,7 +104,7 @@ async def get_all_invoices_by_customer_id(db_conn: db_dependency, customer_id: U
 
 
 async def get_invoice_by_booking_id(db_conn: db_dependency, booking_id: UUID):
-    invoice = select(user_orm.BookingsTable).where(
+    invoice = select(user_orm.InvoiceTable).where(
         user_orm.InvoiceTable.booking_id == booking_id
     )
     result = await db_conn.execute(invoice)

@@ -191,6 +191,7 @@ class BookingsTable(AbstractBase):
     address: Mapped[dict] = mapped_column(JSONB, nullable=True)
     rating: Mapped[int] = mapped_column(Integer, nullable=True)
     review: Mapped[str] = mapped_column(String, nullable=True)
+    quick_fix: Mapped[bool] = mapped_column(Boolean, nullable=True)
 
 
 class InvoiceTable(AbstractBase):

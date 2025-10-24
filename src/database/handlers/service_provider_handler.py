@@ -44,6 +44,19 @@ async def get_service_by_id(db_conn: db_dependency, service_id: UUID):
         raise error.NotFoundError
 
 
+async def get_service_provider_by_id(
+    db_conn: db_dependency, service_provider_id: uuid.UUID
+):
+    service_provider = select(user_orm.ServiceProviderTable).where(
+        user_orm.ServiceProviderTable.id == service_provider_id
+    )
+
+    result = await db_conn.execute(service_provider)
+    found_service = result.scalar_one_or_none()
+    if found_service:
+        return orm_models.ServiceProviderTableModel.model_validate(found_service)
+
+
 async def update_service_by_id(
     db_conn: db_dependency,
     service_id: UUID,
@@ -74,7 +87,7 @@ async def upload_service_image_by_id(
     query = (
         update(user_orm.ServiceProviderTable)
         .where(user_orm.ServiceProviderTable.id == service_id)
-        .values(image_url=image_url)
+        .values(catalogue_pic=image_url)
         .returning(user_orm.ServiceProviderTable)
     )
     result = await db_conn.execute(query)

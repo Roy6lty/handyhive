@@ -17,9 +17,18 @@ async def create_service_provider(
     created_service_provider = await service_provider_handler.create_service_provider(
         service_id=service_id, db_conn=db_conn, services=values
     )
-    if values.location:
+    if values.address:
+        default_address = None
+        for address in values.address:
+            if address.default:
+                default_address = service_provider_model.Coordinates(
+                    longitude=address.longitude, latitude=address.latitude
+                )
+        if not default_address:
+            raise HTTPException(status_code=400, detail="No default address")
+
         location = service_provider_model.CreateLocation(
-            coordinates=values.location, service_provider_id=service_id
+            coordinates=default_address, service_provider_id=service_id
         )
         await locations_handler.create_service_provider_location(
             db_conn=db_conn, services=location
@@ -41,28 +50,26 @@ async def search_service_providers_by_location_and_category(
 async def update_catalogue_picture(
     db_conn: db_dependency, service_id: UUID, catalogue_pic: list[UploadFile]
 ):
-
     new_images = []
-    # upload image
     for pic in catalogue_pic:
         uploaded_profile = await cloudinary_service.upload_single_file(pic)
-        new_images.append(uploaded_profile)
+        if uploaded_profile:
+            new_images.append(uploaded_profile)
 
     try:
-        service = await service_provider_handler.get_service_by_id(
+        service = await service_provider_handler.get_service_provider_by_id(
             db_conn=db_conn,
-            service_id=service_id,
+            service_provider_id=service_id,
         )
-        if service.catalogue_pic is None:
-            updated_catalogue = new_images
-        else:
-            updated_catalogue = service.catalogue_pic
-            updated_catalogue.extend(new_images)
+
+        service.catalogue_pic = (service.catalogue_pic or []) + new_images
 
         await service_provider_handler.upload_service_image_by_id(
-            db_conn=db_conn, service_id=service_id, image_url=updated_catalogue
+            db_conn=db_conn, service_id=service_id, image_url=service.catalogue_pic
         )
+
         return service_provider_model.ServiceResponse.model_validate(service)
+
     except error.NotFoundError:
         raise HTTPException(status_code=404, detail="user not found")
 

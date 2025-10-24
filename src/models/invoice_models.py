@@ -4,7 +4,7 @@ from src.root.abstract_base import AbstractBaseModel
 from enum import StrEnum
 
 
-class InvoiceStatus(StrEnum):
+class Status(StrEnum):
     PENDING = "pending"
     APPROVED = "approved"
     REJECTED = "rejected"
@@ -16,6 +16,7 @@ class CreateInvoiceModel(AbstractBaseModel):
     services_provided: dict
     quantity: int | None
     description: str | None
+    item: str | None
     booking_id: uuid.UUID | None = None
     total_amount: int
     due_date: datetime

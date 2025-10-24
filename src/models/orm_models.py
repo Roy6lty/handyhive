@@ -57,16 +57,14 @@ class ServiceProviderTableModel(AbstractBaseModel):
     name: str
     category: list | None
     zip_code: str | None
-    # closing_hours: str | None
     opening_hours: dict | None
     services_provided: dict | None
     is_active: bool
     profile_pic: str | None
     catalogue_pic: list | None
     rating: str | None
-    address: dict | None
+    address: list | None
     tags: list | None
-    # location: list[LocationTableModel] | None = None
     date_created: datetime
     last_updated: datetime
 
@@ -112,6 +110,8 @@ class BookingsTableModel(AbstractBaseModel):
     review: str | None
     date_created: datetime
     last_updated: datetime
+    address: dict | None
+    scheduled_date: datetime | None
 
 
 class InvoiceTableModel(AbstractBaseModel):

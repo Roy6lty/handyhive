@@ -27,7 +27,7 @@ async def create_bookings(
 
 async def update_bookings(
     db_conn: db_dependency,
-    booking: bookings_model.UpdateBookingModel,
+    booking: bookings_model.UpdateBookingModel | bookings_model.UpdateBookingStatus,
     booking_id: uuid.UUID,
 ):
     # check if the booking has been accepted
@@ -35,7 +35,7 @@ async def update_bookings(
         invoice = await invoice_handler.get_invoice_by_booking_id(
             db_conn=db_conn, booking_id=booking_id
         )
-        if invoice.status != invoice_models.InvoiceStatus.PENDING:
+        if invoice.status != invoice_models.Status.PENDING:
             raise HTTPException(status_code=400, detail="invoice already accepted")
     except error.NotFoundError as err:
         pass

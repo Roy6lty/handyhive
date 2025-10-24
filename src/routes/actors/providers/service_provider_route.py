@@ -1,13 +1,14 @@
-import uuid
 from uuid import UUID
+import uuid
 from fastapi import APIRouter, Depends, File, UploadFile
 from pydantic import UUID4
+from src.models import bookings_model
+from src.services import booking_service
 from src.models import service_provider_model
 from src.models.token_models import AccessTokenData
 from src.services import service_provider
 from src.root.database import db_dependency
-from src.models import user_model, invoice_models
-from src.services import invoice_service
+from src.models import user_model
 from src.services.authorization_service import get_user_verification_service
 from src.root.database import db_dependency
 
@@ -56,6 +57,19 @@ async def search_service_provider(
     )
 
 
+@router.get(
+    "/bookings",
+    description="Get bookings by  service provider id",
+)
+async def get_bookings_by_service_provider(
+    db_conn: db_dependency,
+    token_info: AccessTokenData = Depends(get_user_verification_service),
+):
+    return booking_service.get_all_bookings_service_provider(
+        db_conn=db_conn, service_provider_id=token_info.id
+    )
+
+
 @router.patch(
     "/{id}",
     description="Update Business Information",
@@ -80,9 +94,8 @@ async def update_service(
 
 
 @router.patch(
-    "/picture/{service_id}",
+    "/catalogue-picture/{service_id}",
     description="upload catatlogue images",
-    response_model=user_model.UserProfileResponse,
 )
 async def update_user_profile_picture(
     db_conn: db_dependency,
@@ -93,3 +106,18 @@ async def update_user_profile_picture(
     return await service_provider.update_catalogue_picture(
         db_conn=db_conn, service_id=service_id, catalogue_pic=catalogue_pic
     )
+
+
+##############################################
+@router.patch("/bookings/{id}", description="Update Bookings status0")
+async def update_bookings(
+    db_conn: db_dependency, id: uuid.UUID, bookings: bookings_model.UpdateBookingStatus
+):
+    return await booking_service.update_bookings(
+        db_conn=db_conn, booking_id=id, booking=bookings
+    )
+
+
+@router.get("/available-time/{provider_id}")
+async def get_provider_available_time(db_conn: db_dependency):
+    return ["8:00am", "9:00am"]

@@ -69,7 +69,9 @@ async def get_all_bookings_customer(db_conn: db_dependency, customer_id: UUID):
 
 
 async def update_booking_by_id(
-    db_conn: db_dependency, booking_id: UUID, values: bookings_model.UpdateBookingModel
+    db_conn: db_dependency,
+    booking_id: UUID,
+    values: bookings_model.UpdateBookingModel | bookings_model.UpdateBookingStatus,
 ):
     query = (
         update(user_orm.BookingsTable)

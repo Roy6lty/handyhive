@@ -24,19 +24,6 @@ async def create_bookings(
     "/bookings",
     description="Get bookings by id",
 )
-async def get_bookings_by_service_provider(
-    db_conn: db_dependency,
-    token_info: AccessTokenData = Depends(get_user_verification_service),
-):
-    return booking_service.get_all_bookings_service_provider(
-        db_conn=db_conn, service_provider_id=token_info.id
-    )
-
-
-@router.get(
-    "/bookings",
-    description="Get bookings by id",
-)
 async def get_bookings_by_customer_provider(
     db_conn: db_dependency,
     token_info: AccessTokenData = Depends(get_user_verification_service),
@@ -51,4 +38,13 @@ async def get_bookings_by_customer_provider(
     description="Get bookings by id",
 )
 async def get_bookings_by_id(db_conn: db_dependency, id: uuid.UUID):
-    return booking_service.get_booking_by_id(db_conn=db_conn, booking_id=id)
+    return await booking_service.get_booking_by_id(db_conn=db_conn, booking_id=id)
+
+
+@router.patch("/bookings/{id}", description="Update Bookings")
+async def update_bookings(
+    db_conn: db_dependency, id: uuid.UUID, bookings: bookings_model.UpdateBookingModel
+):
+    return await booking_service.update_bookings(
+        db_conn=db_conn, booking_id=id, booking=bookings
+    )

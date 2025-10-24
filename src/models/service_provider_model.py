@@ -3,6 +3,7 @@ from uuid import UUID
 from pydantic import field_validator
 from shapely.wkb import loads
 from geoalchemy2.elements import WKBElement
+from datetime import datetime
 
 
 class AllCategory(AbstractBaseModel):
@@ -30,21 +31,25 @@ class CreateLocation(AbstractBaseModel):
 
 class CreateService(AbstractBaseModel):
     name: str
-    category: list[str]
     opening_hours: dict[str, dict]  # day: opening time
     address: list[Address]
-    services_provided: dict[str, list[str]]
-    tags: list
-    location: Coordinates | None = None
+    services_provided: dict
 
 
 class ServiceResponse(AbstractBaseModel):
+    id: UUID
     name: str
-    opening_hours: dict
-    # closing_hours: str
-    address: Address
-    services_provided: dict  # catetory: list of services
+    category: list | None
+    zip_code: str | None
+    opening_hours: dict | None
+    services_provided: dict | None
+    is_active: bool
+    profile_pic: str | None
+    catalogue_pic: list | None
+    rating: str | None
+    address: list | None
     tags: list | None
+    date_created: datetime
     coordinates: str | None = None
 
     @field_validator("coordinates", mode="before")

@@ -207,10 +207,9 @@ class InvoiceTable(AbstractBase):
         nullable=False,
     )
     services_provided: Mapped[dict] = mapped_column(JSONB, nullable=True)
-    quantity: Mapped[int] = mapped_column(Integer, nullable=True)
     description: Mapped[str] = mapped_column(String, nullable=True)
     booking_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), nullable=True)
-    invoice_items: Mapped[dict] = mapped_column(JSONB, nullable=True)
+    items: Mapped[dict] = mapped_column(JSONB, nullable=True)
     total_amount: Mapped[int] = mapped_column(Integer, nullable=True)
 
 

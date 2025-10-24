@@ -61,6 +61,8 @@ async def search_service_providers_by_radius(
     result = await db_conn.execute(query)
     service_providers = result.scalars().all()
     if len(service_providers) > 0:
+        for provider in service_providers:
+            print(provider.address)
         return [
             orm_models.ServiceProviderTableModel.model_validate(provider)
             for provider in service_providers

@@ -93,7 +93,11 @@ async def upload_service_image_by_id(
     result = await db_conn.execute(query)
     updated_service = result.scalar_one_or_none()
     if updated_service:
-        return orm_models.ServiceProviderTableModel.model_validate(updated_service)
+        final_result = orm_models.ServiceProviderTableModel.model_validate(
+            updated_service
+        )
+        await db_conn.commit()
+        return final_result
     else:
         raise error.NotFoundError
 

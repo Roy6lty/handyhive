@@ -16,7 +16,7 @@ class CreateInvoiceModel(AbstractBaseModel):
     services_provided: dict
     quantity: int | None
     description: str | None
-    item: str | None
+    items: list[dict] | None
     booking_id: uuid.UUID | None = None
     total_amount: int
     due_date: datetime

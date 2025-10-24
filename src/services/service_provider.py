@@ -62,8 +62,14 @@ async def update_catalogue_picture(
             service_provider_id=service_id,
         )
 
-        service.catalogue_pic = (service.catalogue_pic or []) + new_images
+        if service is None:
+            raise HTTPException(status_code=404, detail="user not found")
+        print(service.catalogue_pic)
 
+        if service.catalogue_pic:
+            service.catalogue_pic.extend(new_images)
+        else:
+            service.catalogue_pic = new_images
         await service_provider_handler.upload_service_image_by_id(
             db_conn=db_conn, service_id=service_id, image_url=service.catalogue_pic
         )

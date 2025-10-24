@@ -31,6 +31,7 @@ class CreateLocation(AbstractBaseModel):
 
 class CreateService(AbstractBaseModel):
     name: str
+    bio: str | None = None
     opening_hours: dict[str, dict]  # day: opening time
     address: list[Address]
     services_provided: dict
@@ -39,6 +40,7 @@ class CreateService(AbstractBaseModel):
 class ServiceResponse(AbstractBaseModel):
     id: UUID
     name: str
+    bio: str | None = None
     category: list | None
     zip_code: str | None
     opening_hours: dict | None

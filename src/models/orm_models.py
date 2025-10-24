@@ -55,6 +55,7 @@ class LocationTableModel(AbstractBaseModel):
 class ServiceProviderTableModel(AbstractBaseModel):
     id: uuid.UUID
     name: str
+    bio:str | None
     category: list | None
     zip_code: str | None
     opening_hours: dict | None

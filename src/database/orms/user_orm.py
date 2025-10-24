@@ -73,7 +73,7 @@ class ServiceProviderTable(AbstractBase):
         UUID(as_uuid=True), primary_key=True, default=uuid4
     )
     name: Mapped[str] = mapped_column(String, nullable=True)
-    address: Mapped[str] = mapped_column(ARRAY(JSONB), nullable=True)
+    address: Mapped[str] = mapped_column(JSONB, nullable=True)
     category: Mapped[str] = mapped_column(ARRAY(String), nullable=True)
     zip_code: Mapped[str] = mapped_column(String, nullable=True)
     # closing_hours: Mapped[str] = mapped_column(String, nullable=True)

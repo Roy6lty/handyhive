@@ -8,6 +8,7 @@ from src.custom_exceptions import error
 from src.models import orm_models
 from geoalchemy2.shape import from_shape
 from shapely.geometry import Point
+from sqlalchemy import func
 
 
 async def create_service_provider_location(
@@ -35,7 +36,7 @@ async def search_service_providers_by_radius(
     search_query: service_provider_model.SearchServices,
     search_radius: int = 50000,
 ):
-
+    # First query: by location and category
     query = (
         select(user_orm.ServiceProviderTable)
         .join(
@@ -60,14 +61,56 @@ async def search_service_providers_by_radius(
 
     result = await db_conn.execute(query)
     service_providers = result.scalars().all()
-    if len(service_providers) > 0:
+
+    if service_providers:
         for provider in service_providers:
             print(provider.address)
         return [
             orm_models.ServiceProviderTableModel.model_validate(provider)
             for provider in service_providers
         ]
-    return []
+
+    # Second query: fallback by category only
+    query = select(user_orm.ServiceProviderTable).where(
+        user_orm.ServiceProviderTable.category.overlap(search_query.category)
+    )
+    result = await db_conn.execute(query)
+    service_providers = result.scalars().all()
+
+    if service_providers:
+        return [
+            orm_models.ServiceProviderTableModel.model_validate(provider)
+            for provider in service_providers
+        ]
+
+    # Third query: fallback by location only
+    query = (
+        select(user_orm.ServiceProviderTable)
+        .join(
+            user_orm.LocationTable,
+            user_orm.ServiceProviderTable.id
+            == user_orm.LocationTable.service_provider_id,
+        )
+        .where(
+            user_orm.LocationTable.coordinates.ST_DWithin(
+                from_shape(
+                    Point(
+                        search_query.coordinates.longitude,
+                        search_query.coordinates.latitude,
+                    ),
+                    srid=4326,
+                ),
+                search_radius,
+            )
+        )
+    )
+    result = await db_conn.execute(query)
+    service_providers = result.scalars().all()
+
+    return [
+        orm_models.ServiceProviderTableModel.model_validate(provider)
+        for provider in service_providers
+    ]
 
 
 async def update_service_location_id(

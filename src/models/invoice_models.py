@@ -1,7 +1,8 @@
 import uuid
-from datetime import datetime
-from src.root.abstract_base import AbstractBaseModel
 from enum import StrEnum
+from datetime import datetime
+from pydantic import Field
+from src.root.abstract_base import AbstractBaseModel
 
 
 class Status(StrEnum):
@@ -16,7 +17,18 @@ class CreateInvoiceModel(AbstractBaseModel):
     services_provided: dict
     quantity: int | None
     description: str | None
-    items: list[dict] | None
+    items: list[dict] = Field(
+        examples=[
+            [
+                {
+                    "item": "Paint Brush",
+                    "quantity": 5,
+                    "description": "This is a very important item to be used for the job",
+                    "price": 200,
+                }
+            ]
+        ]
+    )
     booking_id: uuid.UUID | None = None
     total_amount: int
     due_date: datetime

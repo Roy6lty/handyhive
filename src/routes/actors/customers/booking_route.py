@@ -28,8 +28,8 @@ async def get_bookings_by_customer_provider(
     db_conn: db_dependency,
     token_info: AccessTokenData = Depends(get_user_verification_service),
 ):
-    return booking_service.get_all_bookings_service_provider(
-        db_conn=db_conn, service_provider_id=token_info.id
+    return await booking_service.get_all_bookings_customer(
+        db_conn=db_conn, customer_id=token_info.id
     )
 
 

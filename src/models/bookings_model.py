@@ -1,21 +1,24 @@
-from src.root.abstract_base import AbstractBaseModel
 import uuid
 from datetime import datetime
+from pydantic import Field
+from src.root.abstract_base import AbstractBaseModel
 from src.models.invoice_models import Status
 
 
 class BookingAddress(AbstractBaseModel):
-    longitude: float
-    latitude: float
-    street: str
-    state: str
-    local_government: str
+    longitude: float | None = None
+    latitude: float | None = None
+    street: str | None = None
+    state: str | None = None
+    local_government: str | None = None
 
 
 class CreateBookingModel(AbstractBaseModel):
     service_provider_id: uuid.UUID
-    services_requested: dict
-    price: str
+    services_requested: dict = Field(
+        examples=[{"Plumbing": {"Leak Detection": 4000, "Pipe Replacement": 8500}}]
+    )
+    price: int
     description: str | None
     address: BookingAddress
     scheduled_date: datetime

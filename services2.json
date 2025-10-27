@@ -1,150 +1,576 @@
-{
-  "Auto Mechanic": [
-    "Oil Change",
-    "Engine Diagnostics",
-    "Timing Belt Replacement",
-    "Fuel Injection Service",
-    "Radiator Flush",
-    "Spark Plug Replacement",
-    "Brake Pad Replacement",
-    "Shock Absorber Repair",
-    "Wheel Alignment",
-    "Suspension Tuning",
-    "Brake Fluid Change",
-    "Transmission Repair",
-    "Clutch Replacement",
-    "Gearbox Servicing"
-  ],
-  "Plumbing": [
-    "Leak Detection",
-    "Pipe Replacement",
-    "Water Line Installation",
-    "Drain Cleaning",
-    "Sewer Line Repair",
-    "Toilet Installation",
-    "Sink Repair",
-    "Shower Head Replacement",
-    "Bathtub Installation",
-    "Faucet Repair",
-    "Heater Installation",
-    "Heater Repair",
-    "Solar Water Heater Setup"
-  ],
-  "Electrical": [
-    "A.C Repair and Installation",
-    "Refrigerator Repair",
-    "Freezer Repair",
-    "Water Dispenser",
-    "ColdRoom Servicing",
-    "Washing Machine",
-    "Refrigerator",
-    "Freezer",
-    "Blender",
-    "Exercise Equipment",
-    "Gas/ Electric Cooker",
-    "Microwave",
-    "TV-Repair/ Mounting",
-    "Fan",
-    "Home Theater",
-    "Remote GateControl",
-    "e AUTO-Mechanic/A.C/Rew",
-    "House Wiring",
-    "Lighting Installation",
-    "Circuit Breaker Replacement",
-    "Outdoor Lighting",
-    "Smart Switch Setup"
-  ],
-  "Cleaning": [
-    "Deep Cleaning",
-    "Bathroom Sanitization",
-    "Kitchen Degreasing",
-    "Window Washing",
-    "Mattress Cleaning",
-    "Office Cleaning",
-    "Post-Construction Cleanup",
-    "Warehouse Cleaning",
-    "Retail Space Cleaning",
-    "Pest Control",
-    "Carpet Shampooing",
-    "Upholstery Cleaning",
-    "Move-In/Move-Out Cleaning"
-  ],
-  "Carpentry": [
-    "Custom Wardrobes",
-    "Kitchen Cabinets",
-    "Shelving Units",
-    "TV Consoles",
-    "Bed Frames",
-    "Door Hanging",
-    "Wood Floor Repair",
-    "Window Frame Installation",
-    "Skirting Board Fixing",
-    "Deck Building",
-    "Pergola Construction",
-    "Fence Installation"
-  ],
-  "Painting": [
-    "Wall Painting",
-    "Ceiling Painting",
-    "Accent Walls",
-    "Wallpaper Installation",
-    "Textured Finishes",
-    "Fence Painting",
-    "Building Facade",
-    "Roof Coating",
-    "Gate Painting",
-    "Murals",
-    "Stencil Art",
-    "Faux Finishes"
-  ],
-  "Landscaping": [
-    "Lawn Installation",
-    "Planting & Mulching",
-    "Irrigation System Setup",
-    "Garden Design",
-    "Grass Cutting",
-    "Weeding",
-    "Tree Trimming",
-    "Hedge Shaping",
-    "Stone Pathways",
-    "Retaining Walls",
-    "Outdoor Lighting",
-    "Water Features"
-  ],
-  "Photography": [
-    "Wedding Shoots",
-    "Birthday Parties",
-    "Corporate Events",
-    "Graduation Ceremonies",
-    "Portrait Sessions",
-    "Product Photography",
-    "Photo Editing",
-    "Family Shoots",
-    "Fashion Photography",
-    "Documentary Shoots",
-    "Real Estate Photography"
-  ],
-  "Hairdressing": [
-    "Braiding",
-    "Cornrows",
-    "Twists",
-    "Updos",
-    "Ponytails",
-    "Loc Styling",
-    "Men's Haircut",
-    "Women's Haircut",
-    "Children's Haircut",
-    "Fade & Taper",
-    "Beard Trimming",
-    "Deep Conditioning",
-    "Protein Treatment",
-    "Hot Oil Treatment",
-    "Scalp Detox",
-    "Dandruff Treatment",
-    "Full Dye",
-    "Highlights",
-    "Ombre",
-    "Root Touch-Up",
-    "Color Correction"
-  ]
-}
+[
+  {
+    "id": "d27e4a3e-45b5-45c9-8e80-4178709ddeea",
+    "category": "Auto Mechanic",
+    "services": [
+      {
+        "id": "49ccb939-4cca-49c8-9b04-25b29b35cfd7",
+        "name": "Oil Change"
+      },
+      {
+        "id": "67f564b6-6956-45d8-b7f5-c7ff149c6384",
+        "name": "Engine Diagnostics"
+      },
+      {
+        "id": "de315755-0a91-4f4b-9c95-51c0153d88f4",
+        "name": "Timing Belt Replacement"
+      },
+      {
+        "id": "8bb02738-8ba8-449f-856f-b728a3b4fd1b",
+        "name": "Fuel Injection Service"
+      },
+      {
+        "id": "0c281897-4fe0-4742-92cc-0aa27d74dfb5",
+        "name": "Radiator Flush"
+      },
+      {
+        "id": "a8869f80-c1c5-46c8-abca-b81826b48f69",
+        "name": "Spark Plug Replacement"
+      },
+      {
+        "id": "a7c78533-000e-44ad-b9a2-64ba3b0ef3f2",
+        "name": "Brake Pad Replacement"
+      },
+      {
+        "id": "1fa8bd6b-a919-4474-82f6-6279c4fa96bd",
+        "name": "Shock Absorber Repair"
+      },
+      {
+        "id": "4c63042e-0548-483e-a2b4-a002ce9beb62",
+        "name": "Wheel Alignment"
+      },
+      {
+        "id": "392f665d-cc6c-40b1-8eaf-5dbc482a1895",
+        "name": "Suspension Tuning"
+      },
+      {
+        "id": "fa3c48cd-2904-445c-8661-a30ed7eb0df7",
+        "name": "Brake Fluid Change"
+      },
+      {
+        "id": "b96593fd-8b0e-491e-8a54-51df435f48da",
+        "name": "Transmission Repair"
+      },
+      {
+        "id": "a6e599b9-187f-4cfd-a0b2-dd687f0b40e7",
+        "name": "Clutch Replacement"
+      },
+      {
+        "id": "72aabf21-7082-457f-a8db-28db4b917772",
+        "name": "Gearbox Servicing"
+      }
+    ]
+  },
+  {
+    "id": "f9597d83-c9fe-47f8-bc26-0a6749a2ec3b",
+    "category": "Plumbing",
+    "services": [
+      {
+        "id": "02b604c0-4635-4cd2-98f3-f5d7c6310f99",
+        "name": "Leak Detection"
+      },
+      {
+        "id": "d2f2bcb5-9188-446f-a330-613a525274e2",
+        "name": "Pipe Replacement"
+      },
+      {
+        "id": "b46ba2d0-4b67-4b6b-930e-202146b8c303",
+        "name": "Water Line Installation"
+      },
+      {
+        "id": "2f6bdb3e-7a4b-4036-9761-6d1f37833c4b",
+        "name": "Drain Cleaning"
+      },
+      {
+        "id": "972655df-e76b-447b-8625-41e2c0bb03a6",
+        "name": "Sewer Line Repair"
+      },
+      {
+        "id": "8c360e36-ae3c-47f9-8241-66dc55b8cb5f",
+        "name": "Toilet Installation"
+      },
+      {
+        "id": "ebd80404-5474-4e5c-b453-21b294f64d86",
+        "name": "Sink Repair"
+      },
+      {
+        "id": "874e477d-30e4-4be7-bcd4-7879f4e8bb8d",
+        "name": "Shower Head Replacement"
+      },
+      {
+        "id": "20518021-96fd-49b0-ad52-88410478c734",
+        "name": "Bathtub Installation"
+      },
+      {
+        "id": "a26f028a-04c8-4f66-9602-dedf63197b97",
+        "name": "Faucet Repair"
+      },
+      {
+        "id": "0b6917f1-0d40-4384-8438-671f2034c66d",
+        "name": "Heater Installation"
+      },
+      {
+        "id": "5ad7edd7-b6ed-4a21-af4b-3d17188ad301",
+        "name": "Heater Repair"
+      },
+      {
+        "id": "9b1ef32e-fd5f-4232-ae3e-d3eda23bd50c",
+        "name": "Solar Water Heater Setup"
+      }
+    ]
+  },
+  {
+    "id": "4b6a9fa9-6dea-44f8-98ad-5256d712b85d",
+    "category": "Electrical",
+    "services": [
+      {
+        "id": "68c1da86-8085-4bc1-95e4-4f0fe46c341b",
+        "name": "A.C Repair and Installation"
+      },
+      {
+        "id": "4a5dfdf2-d71d-4a32-8913-347bfb64ac2d",
+        "name": "Refrigerator Repair"
+      },
+      {
+        "id": "3a3c1a2f-ed44-41e9-b129-baa1f128a26c",
+        "name": "Freezer Repair"
+      },
+      {
+        "id": "ea55ff36-fa1b-420f-a0f6-8a5485aa0173",
+        "name": "Water Dispenser"
+      },
+      {
+        "id": "feb0f6e8-86e9-442e-b7fc-426ca64c368d",
+        "name": "ColdRoom Servicing"
+      },
+      {
+        "id": "4d8efd86-cd20-4d55-b0a4-b047ebe68eaa",
+        "name": "Washing Machine"
+      },
+      {
+        "id": "c02e8961-3156-4d87-ac4a-3b2dcb44cb0a",
+        "name": "Refrigerator"
+      },
+      {
+        "id": "2934ec6d-ea10-42ff-9db5-3c215024b0d3",
+        "name": "Freezer"
+      },
+      {
+        "id": "7e5d1425-6f1c-4c5c-88ab-d5aac67110fa",
+        "name": "Blender"
+      },
+      {
+        "id": "9c829ff6-d2b6-4c2b-84de-f66458b54465",
+        "name": "Exercise Equipment"
+      },
+      {
+        "id": "f81c4f53-68c6-4c1f-9a04-810a15fecfb1",
+        "name": "Gas/ Electric Cooker"
+      },
+      {
+        "id": "9311d864-5e52-48ae-810d-786bd732f411",
+        "name": "Microwave"
+      },
+      {
+        "id": "fa79a0fd-f2ed-407b-b966-9451a2bdebf9",
+        "name": "TV-Repair/ Mounting"
+      },
+      {
+        "id": "e9525897-53d3-4392-8594-099052834d3a",
+        "name": "Fan"
+      },
+      {
+        "id": "480c6bde-224a-4eb7-ab1b-400196037100",
+        "name": "Home Theater"
+      },
+      {
+        "id": "59a97686-6621-44b5-9df1-8a82d588a4c3",
+        "name": "Remote GateControl"
+      },
+      {
+        "id": "473ed883-b744-44ff-aa34-52107c106f72",
+        "name": "e AUTO-Mechanic/A.C/Rew"
+      },
+      {
+        "id": "d59cc736-e33e-42d4-9643-2b3132b5f80a",
+        "name": "House Wiring"
+      },
+      {
+        "id": "59fe3ad5-d270-49cb-baeb-b21831912d68",
+        "name": "Lighting Installation"
+      },
+      {
+        "id": "83c5aaec-28f9-40b3-95d4-4ca8337f26ed",
+        "name": "Circuit Breaker Replacement"
+      },
+      {
+        "id": "03fea051-9075-48b4-b5e5-21db7c35be3a",
+        "name": "Outdoor Lighting"
+      },
+      {
+        "id": "8b9d097b-7686-4e91-86c8-00033001879e",
+        "name": "Smart Switch Setup"
+      }
+    ]
+  },
+  {
+    "id": "2192356a-2a62-45fd-a10f-d39d00b9e785",
+    "category": "Cleaning",
+    "services": [
+      {
+        "id": "58c8999c-ee3a-40e8-940b-c31805f50848",
+        "name": "Deep Cleaning"
+      },
+      {
+        "id": "ee69ac8b-48ec-4ed2-a3d1-7f38380cc7f9",
+        "name": "Bathroom Sanitization"
+      },
+      {
+        "id": "2fb9c2b3-fb10-4b79-b387-2adec6af7056",
+        "name": "Kitchen Degreasing"
+      },
+      {
+        "id": "f2247623-a13b-4112-b55b-e85a43d98a12",
+        "name": "Window Washing"
+      },
+      {
+        "id": "53f3cb26-fccd-4160-bcf4-308f960366f1",
+        "name": "Mattress Cleaning"
+      },
+      {
+        "id": "cea6cc5c-b2fb-4763-8d17-f563fb3ae5a3",
+        "name": "Office Cleaning"
+      },
+      {
+        "id": "02fb476f-8311-4a26-af39-8305396d8eca",
+        "name": "Post-Construction Cleanup"
+      },
+      {
+        "id": "7039db7d-21ea-420e-b3f8-3d430ec5e093",
+        "name": "Warehouse Cleaning"
+      },
+      {
+        "id": "6c64023e-e65a-4213-ab80-da80d44005b4",
+        "name": "Retail Space Cleaning"
+      },
+      {
+        "id": "ec3eefc1-73a8-41cd-a37d-8887775fd467",
+        "name": "Pest Control"
+      },
+      {
+        "id": "412bad5f-d564-4a3a-8a05-7e8bef987625",
+        "name": "Carpet Shampooing"
+      },
+      {
+        "id": "25a30391-9ba8-4357-80ad-5f73cda6b356",
+        "name": "Upholstery Cleaning"
+      },
+      {
+        "id": "f95dba6f-181e-49a0-8095-d04be6e73e07",
+        "name": "Move-In/Move-Out Cleaning"
+      }
+    ]
+  },
+  {
+    "id": "a8064941-5746-4cf4-97b5-f5ee92ff47f4",
+    "category": "Carpentry",
+    "services": [
+      {
+        "id": "4cab78a3-e7bf-40cc-9e98-cfa3f2c9ffcf",
+        "name": "Custom Wardrobes"
+      },
+      {
+        "id": "72491cf4-a3cd-4d5f-836a-220bbd9e292a",
+        "name": "Kitchen Cabinets"
+      },
+      {
+        "id": "1cb51c62-e115-4937-ae2d-ce9976dd3b24",
+        "name": "Shelving Units"
+      },
+      {
+        "id": "f2f28739-2e56-460b-a495-7f176485b31f",
+        "name": "TV Consoles"
+      },
+      {
+        "id": "2757b053-32a7-4c39-8956-95c1c71d5890",
+        "name": "Bed Frames"
+      },
+      {
+        "id": "81b7075a-91c1-4c3c-8ae9-61e8d0b72f81",
+        "name": "Door Hanging"
+      },
+      {
+        "id": "7756b117-3a8a-4169-923c-6d21c52321de",
+        "name": "Wood Floor Repair"
+      },
+      {
+        "id": "0cc07f3f-aa29-4ccd-80e9-7942f6411775",
+        "name": "Window Frame Installation"
+      },
+      {
+        "id": "c7972d62-6d66-4d90-b731-53271d0cf332",
+        "name": "Skirting Board Fixing"
+      },
+      {
+        "id": "25264fae-33db-4377-adad-e90598cbe598",
+        "name": "Deck Building"
+      },
+      {
+        "id": "e0276c1c-4566-4edb-8db4-cb5ca5ad3bb0",
+        "name": "Pergola Construction"
+      },
+      {
+        "id": "470c82c8-b7aa-4dc8-9de4-db93ef51e887",
+        "name": "Fence Installation"
+      }
+    ]
+  },
+  {
+    "id": "5373fcdb-5fb8-44a6-9a20-949784d9b65b",
+    "category": "Painting",
+    "services": [
+      {
+        "id": "c2fd5026-0e03-42ea-93d1-95cba6d80125",
+        "name": "Wall Painting"
+      },
+      {
+        "id": "99c91437-ca1b-46e9-b2dd-5963b639d61a",
+        "name": "Ceiling Painting"
+      },
+      {
+        "id": "d88f4520-6ca4-4224-ba2d-38c73ca5d713",
+        "name": "Accent Walls"
+      },
+      {
+        "id": "5aec5986-95e5-46af-989a-3e3d5f85b952",
+        "name": "Wallpaper Installation"
+      },
+      {
+        "id": "ef96709b-a350-4558-95ef-d41f42632dc2",
+        "name": "Textured Finishes"
+      },
+      {
+        "id": "201475b6-310f-4093-bdd2-e0dd367b684d",
+        "name": "Fence Painting"
+      },
+      {
+        "id": "e0b4f511-1405-4efa-91f9-3241fc263494",
+        "name": "Building Facade"
+      },
+      {
+        "id": "1af445eb-2de9-4ddf-b672-efd52c373509",
+        "name": "Roof Coating"
+      },
+      {
+        "id": "b24ec5e3-3121-4fc9-8fa1-0a2460b1c8cb",
+        "name": "Gate Painting"
+      },
+      {
+        "id": "51b48d45-3d7a-4bb9-bee0-6e9ef80463be",
+        "name": "Murals"
+      },
+      {
+        "id": "dfdc97c7-bad9-4ef0-b3ff-43707e6b4939",
+        "name": "Stencil Art"
+      },
+      {
+        "id": "a351e03e-133d-40a5-bd7e-0b65c699849b",
+        "name": "Faux Finishes"
+      }
+    ]
+  },
+  {
+    "id": "fef9eed6-abb2-4b87-a805-b21c9c395851",
+    "category": "Landscaping",
+    "services": [
+      {
+        "id": "86daa313-c8b8-478c-8c72-ad948bf758e8",
+        "name": "Lawn Installation"
+      },
+      {
+        "id": "00fe2306-94cb-4d04-bf97-3e222e2acf58",
+        "name": "Planting & Mulching"
+      },
+      {
+        "id": "a952cbe4-cd50-46bf-8816-b688dbde0f71",
+        "name": "Irrigation System Setup"
+      },
+      {
+        "id": "ceb03e6f-4c15-42aa-9793-bf0ba18f9ce1",
+        "name": "Garden Design"
+      },
+      {
+        "id": "9c2a3031-8752-4294-a7df-2cfd28924988",
+        "name": "Grass Cutting"
+      },
+      {
+        "id": "907e9eeb-a13f-4b5e-bf58-d7484d4f4827",
+        "name": "Weeding"
+      },
+      {
+        "id": "b8270219-8920-410a-82ad-ffee19c3e52b",
+        "name": "Tree Trimming"
+      },
+      {
+        "id": "158ea44d-791c-47f0-a8af-b60fbc5d4b91",
+        "name": "Hedge Shaping"
+      },
+      {
+        "id": "7c810e03-cf88-4e41-8d1e-5cb99faec630",
+        "name": "Stone Pathways"
+      },
+      {
+        "id": "f648e64e-7f7b-4aca-a8d1-63c09d9db6ea",
+        "name": "Retaining Walls"
+      },
+      {
+        "id": "5f743a28-fe36-4c0b-86b9-9d6220c681c7",
+        "name": "Outdoor Lighting"
+      },
+      {
+        "id": "ed968e13-cdde-492c-9ff0-63b5ed2091cd",
+        "name": "Water Features"
+      }
+    ]
+  },
+  {
+    "id": "afb157f5-a437-47db-82ba-460ad6a4c2fc",
+    "category": "Photography",
+    "services": [
+      {
+        "id": "5fe4970a-3eda-4097-9b21-78618a5de46d",
+        "name": "Wedding Shoots"
+      },
+      {
+        "id": "99a248ac-09e5-4393-9dcf-614a9d023a58",
+        "name": "Birthday Parties"
+      },
+      {
+        "id": "34968d56-07eb-4b37-8ddb-a5349ce72f57",
+        "name": "Corporate Events"
+      },
+      {
+        "id": "81f6bc18-9342-4ba4-af67-8585f756bf5a",
+        "name": "Graduation Ceremonies"
+      },
+      {
+        "id": "78afc763-eb90-4b1e-b67d-bb3873470c95",
+        "name": "Portrait Sessions"
+      },
+      {
+        "id": "2003c25b-5f33-4527-b436-7813618da4aa",
+        "name": "Product Photography"
+      },
+      {
+        "id": "69aa7132-2fdf-407e-b551-f2a8e10bb8af",
+        "name": "Photo Editing"
+      },
+      {
+        "id": "2bb816ff-5359-432b-be53-ef1aca8be52b",
+        "name": "Family Shoots"
+      },
+      {
+        "id": "7d4d598c-fb12-4c7e-8452-60ae85745f26",
+        "name": "Fashion Photography"
+      },
+      {
+        "id": "d75d9bb7-85e2-4111-a69d-cb07eeb9d5ca",
+        "name": "Documentary Shoots"
+      },
+      {
+        "id": "e2901432-397b-4943-aec7-ffe2abcf89dd",
+        "name": "Real Estate Photography"
+      }
+    ]
+  },
+  {
+    "id": "3057daa2-5277-4146-975b-196fc9afac99",
+    "category": "Hairdressing",
+    "services": [
+      {
+        "id": "c380654f-837d-43c2-9272-8f34ddb947d7",
+        "name": "Braiding"
+      },
+      {
+        "id": "c6aaadbe-83b9-4962-a678-cd3235a6f85f",
+        "name": "Cornrows"
+      },
+      {
+        "id": "c439efbb-239a-4504-a799-b4a4ae007b8c",
+        "name": "Twists"
+      },
+      {
+        "id": "84da2de3-4c98-449b-ae5c-37bb70c58239",
+        "name": "Updos"
+      },
+      {
+        "id": "c2bf9f43-89b0-45db-aa63-98d37156ec34",
+        "name": "Ponytails"
+      },
+      {
+        "id": "db580120-b78f-43e5-a561-cba7a00d4582",
+        "name": "Loc Styling"
+      },
+      {
+        "id": "78abbe30-f783-4400-8108-3beea56a1a2b",
+        "name": "Men's Haircut"
+      },
+      {
+        "id": "6c097419-44d4-4864-88ce-a4e48651f3f0",
+        "name": "Women's Haircut"
+      },
+      {
+        "id": "3ff74594-4763-4b7e-9a17-264a3386ca1f",
+        "name": "Children's Haircut"
+      },
+      {
+        "id": "2ddf423f-1a3a-4be4-9e3d-4910ebd2f5d4",
+        "name": "Fade & Taper"
+      },
+      {
+        "id": "edab4cb3-a277-4a0b-8fd0-91320c1010b5",
+        "name": "Beard Trimming"
+      },
+      {
+        "id": "3df143cb-1fa0-4187-948f-671828dd9f8d",
+        "name": "Deep Conditioning"
+      },
+      {
+        "id": "d9fdefc5-6565-4347-89ca-e2bc4ab1480f",
+        "name": "Protein Treatment"
+      },
+      {
+        "id": "953daf4b-4cdc-4795-a9b3-4c65333528b2",
+        "name": "Hot Oil Treatment"
+      },
+      {
+        "id": "f9c3a5a6-3d17-4a31-9a55-3d8a98575ed4",
+        "name": "Scalp Detox"
+      },
+      {
+        "id": "cea48e0a-2789-481a-94db-966c9e43b3a9",
+        "name": "Dandruff Treatment"
+      },
+      {
+        "id": "842d8a7b-1a86-41c2-957f-758ccb197806",
+        "name": "Full Dye"
+      },
+      {
+        "id": "84fce08a-f9af-451e-8ac5-d86e0a2807c3",
+        "name": "Highlights"
+      },
+      {
+        "id": "86aa71ba-b55a-4192-b4b7-1e5a865877b5",
+        "name": "Ombre"
+      },
+      {
+        "id": "51eff28f-e9ed-4391-9621-32a5faa5ee47",
+        "name": "Root Touch-Up"
+      },
+      {
+        "id": "894e7438-dc85-4497-adff-a6b03307b6d1",
+        "name": "Color Correction"
+      }
+    ]
+  }
+]

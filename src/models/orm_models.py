@@ -55,7 +55,7 @@ class LocationTableModel(AbstractBaseModel):
 class ServiceProviderTableModel(AbstractBaseModel):
     id: uuid.UUID
     name: str
-    bio:str | None
+    bio: str | None
     category: list | None
     zip_code: str | None
     opening_hours: dict | None
@@ -106,7 +106,7 @@ class BookingsTableModel(AbstractBaseModel):
     service_provider_id: uuid.UUID
     price: int | None = 0
     description: str
-    services_requested: dict
+    services_requested: dict | list
     rating: int | None
     review: str | None
     date_created: datetime
@@ -123,7 +123,7 @@ class InvoiceTableModel(AbstractBaseModel):
     due_date: datetime
     price: uuid.UUID
     description: str
-    services_requested: dict
+    services_requested: dict | list
     rating: int | None
     review: str | None
     date_created: datetime

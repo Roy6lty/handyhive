@@ -3,12 +3,11 @@ from uuid import UUID
 from src.root.database import db_dependency
 from src.models import service_provider_model
 from src.database.orms import user_orm
-from sqlalchemy import select, update, delete, text
+from sqlalchemy import select, update, delete
 from src.custom_exceptions import error
 from src.models import orm_models
 from geoalchemy2.shape import from_shape
 from shapely.geometry import Point
-from sqlalchemy import func
 
 
 async def create_service_provider_location(

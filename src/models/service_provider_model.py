@@ -72,7 +72,7 @@ class ServiceResponse(AbstractBaseModel):
     category: list | None
     zip_code: str | None
     opening_hours: dict | None
-    services_provided: dict | None
+    services_provided: dict | list | None
     is_active: bool
     profile_pic: str | None
     catalogue_pic: list | None

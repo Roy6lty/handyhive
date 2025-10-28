@@ -11,6 +11,7 @@ class BookingAddress(AbstractBaseModel):
     street: str | None = None
     state: str | None = None
     local_government: str | None = None
+    nickname: str | None = None
 
 
 class CreateBookingModel(AbstractBaseModel):
@@ -42,8 +43,8 @@ class CreateBookingModel(AbstractBaseModel):
         ]
     )
     price: int
-    description: str | None
-    address: BookingAddress
+    description: str | None = None
+    address: BookingAddress | None = None
     scheduled_date: datetime
     quick_fix: bool = False
 
@@ -66,4 +67,4 @@ class BookingResponse(AbstractBaseModel):
     price: int
     services_requested: dict | list
     scheduled_date: datetime
-    address: dict
+    address: dict | None = None

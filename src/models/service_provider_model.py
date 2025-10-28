@@ -13,9 +13,10 @@ class AllCategory(AbstractBaseModel):
 class Address(AbstractBaseModel):
     longitude: float
     latitude: float
-    street: str
-    state: str
-    local_government: str
+    street: str | None = None
+    state: str | None = None
+    local_government: str | None = None
+    nickname: str | None = None
     default: bool = False
 
 

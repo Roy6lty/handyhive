@@ -16,7 +16,7 @@ class CreateInvoiceModel(AbstractBaseModel):
     due_date: datetime
     services_provided: dict
     quantity: int | None
-    description: str | None
+    description: str | None = None
     items: list[dict] = Field(
         examples=[
             [
@@ -41,7 +41,7 @@ class InvoiceResponseModel(AbstractBaseModel):
     status: str
     due_date: datetime
     price: str
-    description: str
+    description: str | None
     services_provided: dict
     date_created: datetime
 

@@ -105,7 +105,7 @@ class BookingsTableModel(AbstractBaseModel):
     customer_id: uuid.UUID
     service_provider_id: uuid.UUID
     price: int | None = 0
-    description: str
+    description: str | None
     services_requested: dict | list
     rating: int | None
     review: str | None
@@ -122,7 +122,7 @@ class InvoiceTableModel(AbstractBaseModel):
     status: str
     due_date: datetime
     price: uuid.UUID
-    description: str
+    description: str | None
     services_requested: dict | list
     rating: int | None
     review: str | None

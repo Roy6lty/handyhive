@@ -65,6 +65,7 @@ class BookingResponse(AbstractBaseModel):
     customer_id: uuid.UUID
     service_provider_id: uuid.UUID
     price: int
-    services_requested: dict | list
+    services_requested: dict | list | None
     scheduled_date: datetime
+    description: str | None = None
     address: dict | None = None

@@ -92,7 +92,7 @@ class ServiceResponse(AbstractBaseModel):
     is_active: bool
     profile_pic: str | None
     catalogue_pic: list | None
-    rating: str | None
+    rating: float | None
     address: list | None
     tags: list | None
     date_created: datetime

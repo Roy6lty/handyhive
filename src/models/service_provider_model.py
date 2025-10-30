@@ -33,6 +33,8 @@ class CreateLocation(AbstractBaseModel):
 class CreateService(AbstractBaseModel):
     name: str
     bio: str | None = None
+    category: list[str]
+    zip_code: str | None = None
     opening_hours: dict[str, dict] = Field(
         examples=[
             {

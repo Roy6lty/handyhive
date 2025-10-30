@@ -1,3 +1,4 @@
+from unicodedata import category
 import uuid
 from uuid import UUID
 from src.root.database import db_dependency
@@ -16,7 +17,7 @@ async def create_service_provider(
 ):
     new_service = user_orm.ServiceProviderTable(
         id=service_id,
-        category=list(services.services_provided.keys()),
+        category=services.category,
         **services.model_dump(exclude={"category", "location"})
     )
     db_conn.add(new_service)

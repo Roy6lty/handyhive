@@ -63,7 +63,7 @@ class ServiceProviderTableModel(AbstractBaseModel):
     is_active: bool
     profile_pic: str | None
     catalogue_pic: list | None
-    rating: str | None
+    rating: float | None
     address: list | dict | None
     tags: list | None
     date_created: datetime

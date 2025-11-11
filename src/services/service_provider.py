@@ -2,12 +2,15 @@ import uuid
 from uuid import UUID
 
 from fastapi import HTTPException, UploadFile
-from src.database.handlers import service_provider_handler
+from src.database.handlers import bookings_handler
+from src.models.user_model import ServiceProfileResponse
+from src.database.handlers import service_provider_handler, user_handler
 from src.root.database import db_dependency
 from src.database.handlers import locations_handler
 from src.models import service_provider_model
 from src.services import cloudinary_service
 from src.custom_exceptions import error
+from src.models import bookings_model
 
 
 async def create_service_provider(
@@ -64,7 +67,6 @@ async def update_catalogue_picture(
 
         if service is None:
             raise HTTPException(status_code=404, detail="user not found")
-        print(service.catalogue_pic)
 
         if service.catalogue_pic:
             service.catalogue_pic.extend(new_images)
@@ -87,13 +89,48 @@ async def get_service_provider_by_id(db_conn: db_dependency, service_provider_id
     return service_provider_model.ServiceResponse.model_validate(service_provider)
 
 
+async def update_booking_status(
+    db_conn: db_dependency,
+    booking_id: UUID,
+    service_provider_id: UUID,
+    values: bookings_model.UpdateBookingStatus,
+):
+    service_provider = await bookings_handler.update_booking_by_id(
+        db_conn=db_conn, booking_id=booking_id, values=values
+    )
+
+
+async def get_business_profile(db_conn: db_dependency, user_id: UUID):
+    service_provider = await user_handler.get_service_provider_profile_by_id(
+        db_conn=db_conn, user_id=user_id
+    )
+    return ServiceProfileResponse.model_validate(service_provider)
+
+
+async def update_verfied_status(
+    db_conn: db_dependency, service_provider_id: UUID, verified: bool
+):
+    updates = service_provider_model.UpdateServiceProvider(verified=verified)
+    try:
+        updated_service_provider = await service_provider_handler.update_service_by_id(
+            db_conn=db_conn, service_id=service_provider_id, values=updates
+        )
+        return service_provider_model.ServiceResponse.model_validate(
+            updated_service_provider
+        )
+    except error.NotFoundError:
+        raise HTTPException(status_code=404, detail="service provider not found")
+
+
 async def update_service_provider_by_id(
     db_conn: db_dependency,
     service_provider_id: UUID,
     values: service_provider_model.UpdateServices,
 ):
+    updates = service_provider_model.UpdateServiceProvider(**values.model_dump())
+
     updated_service_provider = await service_provider_handler.update_service_by_id(
-        db_conn=db_conn, service_id=service_provider_id, values=values
+        db_conn=db_conn, service_id=service_provider_id, values=updates
     )
     return updated_service_provider
 

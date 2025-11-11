@@ -95,6 +95,7 @@ class ServiceResponse(AbstractBaseModel):
     rating: float | None
     address: list | None
     tags: list | None
+    verified: bool = False
     date_created: datetime
     coordinates: str | None = None
 
@@ -126,3 +127,11 @@ class UpdateServices(AbstractBaseModel):
     catalogue_pic: list[str] | None = None
     services_provided: dict | None = None  # catetory: list of services
     tags: list = []
+
+
+class UpdateVerifiedStatus(AbstractBaseModel):
+    verified: bool
+
+
+class UpdateServiceProvider(UpdateServices):
+    verified: bool | None = None

@@ -1,4 +1,3 @@
-from unicodedata import category
 import uuid
 from uuid import UUID
 from src.root.database import db_dependency
@@ -58,10 +57,25 @@ async def get_service_provider_by_id(
         return orm_models.ServiceProviderTableModel.model_validate(found_service)
 
 
+async def get_service_by_user_id(db_conn: db_dependency, user_id: UUID):
+    service = select(user_orm.ServiceProviderTable).where(
+        user_orm.ServiceProviderTable.user_id == user_id
+    )
+
+    result = await db_conn.execute(service)
+    found_service = result.scalar_one_or_none()
+    if found_service:
+
+        orm_models.ServiceProviderTableModel.model_validate(found_service)
+
+    else:
+        raise error.NotFoundError
+
+
 async def update_service_by_id(
     db_conn: db_dependency,
     service_id: UUID,
-    values: service_provider_model.UpdateServices,
+    values: service_provider_model.UpdateServiceProvider,
 ):
     if values.services_provided is not None:
         values_json = values.model_dump(exclude_unset=True)

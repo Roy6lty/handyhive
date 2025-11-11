@@ -7,32 +7,6 @@ from src.models.token_models import Roles
 from geoalchemy2.elements import WKBElement
 
 
-class UserTableModel(AbstractBaseModel):
-    id: uuid.UUID
-    first_name: str
-    last_name: str
-    phone_no: str
-    address: list[dict] | None
-    social_links: list[dict] | None
-    country_code: str
-    role: Roles
-    hashed_password: str
-    email: str
-    is_active: bool
-    account_type: str
-    two_fa_auth_code: str | None
-    two_fa_auth_expiry_time: int = 0
-    two_fa: bool = False
-    token_jit: uuid.UUID | None
-    profile_pic: str | None
-    biodata: dict | None = None
-    referral_code: str | None
-    push_notifications: bool | None = None
-    promotional_notifications: dict | None
-    date_created: datetime
-    last_updated: datetime
-
-
 class LocationTableModel(AbstractBaseModel):
     id: uuid.UUID
     service_provider_id: uuid.UUID
@@ -66,6 +40,34 @@ class ServiceProviderTableModel(AbstractBaseModel):
     rating: float | None
     address: list | dict | None
     tags: list | None
+    verified: bool = False
+    date_created: datetime
+    last_updated: datetime
+
+
+class UserTableModel(AbstractBaseModel):
+    id: uuid.UUID
+    first_name: str
+    last_name: str
+    phone_no: str
+    address: list[dict] | None
+    social_links: list[dict] | None
+    country_code: str
+    role: Roles
+    hashed_password: str
+    email: str
+    is_active: bool
+    account_type: str
+    two_fa_auth_code: str | None
+    two_fa_auth_expiry_time: int = 0
+    two_fa: bool = False
+    token_jit: uuid.UUID | None
+    profile_pic: str | None
+    biodata: dict | None = None
+    referral_code: str | None
+    push_notifications: bool | None = None
+    promotional_notifications: dict | None
+    business_profile: ServiceProviderTableModel | None = None
     date_created: datetime
     last_updated: datetime
 
@@ -113,6 +115,8 @@ class BookingsTableModel(AbstractBaseModel):
     last_updated: datetime
     address: dict | None
     scheduled_date: datetime | None
+    status: str | None = None
+    service_provider: ServiceProviderTableModel | dict | None = None
 
 
 class InvoiceTableModel(AbstractBaseModel):

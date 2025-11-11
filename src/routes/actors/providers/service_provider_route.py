@@ -8,7 +8,6 @@ from src.models import service_provider_model
 from src.models.token_models import AccessTokenData
 from src.services import service_provider
 from src.root.database import db_dependency
-from src.models import user_model
 from src.services.authorization_service import get_user_verification_service
 from src.root.database import db_dependency
 
@@ -26,20 +25,6 @@ async def create_service_provider(
 ):
     return await service_provider.create_service_provider(
         db_conn=db_conn, values=service
-    )
-
-
-@router.get(
-    "/{id}",
-    description="Get single Service Provider",
-)
-async def get_service_provider(
-    db_conn: db_dependency,
-    id: UUID4,
-    _: AccessTokenData = Depends(get_user_verification_service),
-):
-    return await service_provider.get_service_provider_by_id(
-        db_conn=db_conn, service_provider_id=id
     )
 
 
@@ -67,6 +52,65 @@ async def get_bookings_by_service_provider(
 ):
     return booking_service.get_all_bookings_service_provider(
         db_conn=db_conn, service_provider_id=token_info.id
+    )
+
+
+@router.get(
+    "/profile",
+    description="Get Business Information",
+)
+async def get_service_provider_profile(
+    db_conn: db_dependency,
+    user_info: AccessTokenData = Depends(get_user_verification_service),
+):
+    return await service_provider.get_business_profile(
+        db_conn=db_conn, user_id=user_info.id
+    )
+
+
+@router.patch("/booking/{booking_id}/update", description="Accept Booking")
+async def accept_booking(
+    db_conn: db_dependency,
+    booking_id: UUID,
+    status: bookings_model.UpdateBookingStatus,
+    user_info: AccessTokenData = Depends(get_user_verification_service),
+):
+    return await service_provider.update_booking_status(
+        db_conn=db_conn,
+        booking_id=booking_id,
+        service_provider_id=user_info.id,
+        values=status,
+    )
+
+
+@router.get(
+    "/{id}",
+    description="Get single Service Provider",
+)
+async def get_service_provider(
+    db_conn: db_dependency,
+    id: UUID4,
+    _: AccessTokenData = Depends(get_user_verification_service),
+):
+    return await service_provider.get_service_provider_by_id(
+        db_conn=db_conn, service_provider_id=id
+    )
+
+
+@router.patch(
+    "/verify/{service_provider_id}",
+    description="Update Verification Status",
+)
+async def update_verfied_status(
+    db_conn: db_dependency,
+    service_provider_id: UUID,
+    status: service_provider_model.UpdateVerifiedStatus,
+    _: AccessTokenData = Depends(get_user_verification_service),
+):
+    return await service_provider.update_verfied_status(
+        db_conn=db_conn,
+        service_provider_id=service_provider_id,
+        verified=status.verified,
     )
 
 

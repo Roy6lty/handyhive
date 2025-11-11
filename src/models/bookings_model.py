@@ -1,8 +1,17 @@
+from enum import StrEnum
 import uuid
 from datetime import datetime
-from pydantic import Field
+from pydantic import Field, field_validator
 from src.root.abstract_base import AbstractBaseModel
-from src.models.invoice_models import Status
+
+
+class BookingStatus(StrEnum):
+    PENDING = "PENDING"
+    ACCEPTED = "ACCEPTED"
+    REJECTED = "REJECTED"
+    COMPLETED = "COMPLETED"
+    CANCELLED = "CANCELLED"
+    PROCESSING = "PROCESSING"
 
 
 class BookingAddress(AbstractBaseModel):
@@ -50,14 +59,24 @@ class CreateBookingModel(AbstractBaseModel):
 
 
 class UpdateBookingModel(AbstractBaseModel):
-    services_requested: dict | None = None
-    price: str | None = None
+    services_requested: list | None = None
+    price: int | None = None
     description: str | None = None
     scheduled_date: datetime | None = None
+    status: str | None = None
 
 
 class UpdateBookingStatus(AbstractBaseModel):
-    status: Status
+    status: BookingStatus
+
+
+class ServiceProviderDetails(AbstractBaseModel):
+    id: uuid.UUID
+    name: str | None = None
+    bio: str | None = None
+    rating: float | None = None
+    verified: bool = False
+    profile_pic: str | None = None
 
 
 class BookingResponse(AbstractBaseModel):
@@ -69,3 +88,5 @@ class BookingResponse(AbstractBaseModel):
     scheduled_date: datetime
     description: str | None = None
     address: dict | None = None
+    status: BookingStatus | None
+    service_provider: dict | ServiceProviderDetails | None = None

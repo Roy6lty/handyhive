@@ -1,9 +1,9 @@
-import select
 import uuid
 from src.database.orms import user_orm
 from src.root.database import db_dependency
 from src.models import user_model
 from sqlalchemy import select, update, delete
+from sqlalchemy.orm import joinedload
 from src.custom_exceptions import error
 from src.models import orm_models
 from src.models import authentication
@@ -28,7 +28,7 @@ async def create_user(
     await db_conn.commit()
     await db_conn.refresh(new_user)
 
-    return orm_models.UserTableModel.model_validate(new_user)
+    return orm_models.UserTableModel.model_validate(new_user.as_dict())
 
 
 async def get_user_by_id(db_conn: db_dependency, user_id: uuid.UUID):
@@ -37,7 +37,7 @@ async def get_user_by_id(db_conn: db_dependency, user_id: uuid.UUID):
     user = result.scalar_one_or_none()
 
     if user:
-        return orm_models.UserTableModel.model_validate(user)
+        return orm_models.UserTableModel.model_validate(user.as_dict())
     else:
         raise error.NotFoundError
 
@@ -48,7 +48,24 @@ async def get_user_by_email(db_conn: db_dependency, email: str):
     user = result.scalar_one_or_none()
 
     if user:
-        return orm_models.UserTableModel.model_validate(user)
+        return orm_models.UserTableModel.model_validate(user.as_dict())
+    else:
+        raise error.NotFoundError
+
+
+async def get_service_provider_profile_by_id(
+    db_conn: db_dependency, user_id: uuid.UUID
+):
+    query = (
+        select(user_orm.UserTable)
+        .where(user_orm.UserTable.id == user_id)
+        .options(joinedload(user_orm.UserTable.business_profile))
+    )
+    result = await db_conn.execute(query)
+    service_provider = result.scalars().first()
+
+    if service_provider:
+        return orm_models.UserTableModel.model_validate(service_provider)
     else:
         raise error.NotFoundError
 
@@ -69,7 +86,7 @@ async def update_user_by_id(
     result = await db_conn.execute(query)
     updated_user = result.scalar_one_or_none()
     if updated_user:
-        updated_user = orm_models.UserTableModel.model_validate(updated_user)
+        updated_user = orm_models.UserTableModel.model_validate(updated_user.as_dict())
         await db_conn.commit()
         return updated_user
     else:

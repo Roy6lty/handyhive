@@ -9,9 +9,10 @@ from src.custom_exceptions import error
 
 
 async def get_booking_by_id(booking_id: uuid.UUID, db_conn: db_dependency):
-    return await bookings_handler.get_booking_by_id(
+    booking = await bookings_handler.get_booking_by_id(
         booking_id=booking_id, db_conn=db_conn
     )
+    return bookings_model.BookingResponse.model_validate(booking)
 
 
 async def create_bookings(
@@ -19,10 +20,10 @@ async def create_bookings(
     booking: bookings_model.CreateBookingModel,
     user_id: uuid.UUID,
 ):
-    booking = await bookings_handler.create_booking(
+    new_booking = await bookings_handler.create_booking(
         db_conn=db_conn, booking=booking, user_id=user_id
     )
-    return bookings_model.BookingResponse.model_validate(booking)
+    return bookings_model.BookingResponse.model_validate(new_booking)
 
 
 async def update_bookings(
@@ -39,9 +40,11 @@ async def update_bookings(
             raise HTTPException(status_code=400, detail="invoice already accepted")
     except error.NotFoundError as err:
         pass
-    return await bookings_handler.update_booking_by_id(
+
+    bookings = await bookings_handler.update_booking_by_id(
         db_conn=db_conn, values=booking, booking_id=booking_id
     )
+    return bookings_model.BookingResponse.model_validate(bookings)
 
 
 async def get_all_bookings_service_provider(
@@ -53,6 +56,9 @@ async def get_all_bookings_service_provider(
 
 
 async def get_all_bookings_customer(db_conn: db_dependency, customer_id: uuid.UUID):
-    return await bookings_handler.get_all_bookings_customer(
+    bookings = await bookings_handler.get_all_bookings_customer(
         db_conn=db_conn, customer_id=customer_id
     )
+    return [
+        bookings_model.BookingResponse.model_validate(booking) for booking in bookings
+    ]

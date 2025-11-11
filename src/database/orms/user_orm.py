@@ -55,6 +55,9 @@ class UserTable(AbstractBase):
     push_notifications: Mapped[bool] = mapped_column(Boolean, nullable=True)
     promotional_notifications: Mapped[dict] = mapped_column(JSONB, nullable=True)
     message: Mapped[list["MessagesTable"]] = relationship(back_populates="user")
+    business_profile: Mapped["ServiceProviderTable"] = relationship(
+        back_populates="user"
+    )
 
     __table_args__ = (
         Index(
@@ -72,6 +75,7 @@ class ServiceProviderTable(AbstractBase):
     id: Mapped[UUID] = mapped_column(
         UUID(as_uuid=True), primary_key=True, default=uuid4
     )
+    user_id: Mapped[UUID] = mapped_column(ForeignKey(UserTable.id), nullable=True)
     name: Mapped[str] = mapped_column(String, nullable=True)
     bio: Mapped[str] = mapped_column(String, nullable=True)
     address: Mapped[str] = mapped_column(JSONB, nullable=True)
@@ -87,6 +91,9 @@ class ServiceProviderTable(AbstractBase):
     review: Mapped[str] = mapped_column(String, nullable=True)
     tags: Mapped[List[str]] = mapped_column(ARRAY(String), nullable=True)
     location: Mapped[list["LocationTable"]] = relationship(back_populates="provider")
+    verified: Mapped[bool] = mapped_column(Boolean, default=False)
+    bookings: Mapped["BookingsTable"] = relationship(back_populates="service_provider")
+    user: Mapped["UserTable"] = relationship(back_populates="business_profile")
     __table_args__ = (
         Index(
             "idx_id_service",  # Index name
@@ -170,7 +177,9 @@ class ServicesTagsTable(AbstractBase):
     id: Mapped[UUID] = mapped_column(
         UUID(as_uuid=True), primary_key=True, default=uuid4
     )
-    service_provider_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), nullable=True)
+    service_provider_id: Mapped[UUID] = mapped_column(
+        ForeignKey(ServiceProviderTable.id), nullable=True
+    )
     sub_service: Mapped[str] = mapped_column(String, nullable=True)
     service: Mapped[str] = mapped_column(String, nullable=True)
 
@@ -181,7 +190,9 @@ class BookingsTable(AbstractBase):
         UUID(as_uuid=True), primary_key=True, default=uuid4
     )
     customer_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), nullable=True)
-    service_provider_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), nullable=True)
+    service_provider_id: Mapped[UUID] = mapped_column(
+        ForeignKey(ServiceProviderTable.id), nullable=True
+    )
     price: Mapped[UUID] = mapped_column(Integer, nullable=True)
     description: Mapped[str] = mapped_column(String, nullable=True)
     services_requested: Mapped[dict] = mapped_column(JSONB, nullable=True)
@@ -193,6 +204,10 @@ class BookingsTable(AbstractBase):
     rating: Mapped[int] = mapped_column(Integer, nullable=True)
     review: Mapped[str] = mapped_column(String, nullable=True)
     quick_fix: Mapped[bool] = mapped_column(Boolean, nullable=True)
+    service_provider: Mapped["ServiceProviderTable"] = relationship(
+        back_populates="bookings"
+    )
+    status: Mapped[str] = mapped_column(String, nullable=True)
 
 
 class InvoiceTable(AbstractBase):

@@ -3,7 +3,7 @@ from uuid import UUID
 from src.root.abstract_base import AbstractBaseModel
 from pydantic import Field
 from src.models.token_models import Roles
-from src.models.service_provider_model import Address
+from src.models.service_provider_model import Address, ServiceResponse
 
 
 class AccountType(StrEnum):
@@ -73,6 +73,10 @@ class UserProfileResponse(AbstractBaseModel):
     two_fa: bool
     profile_pic: str | None
     referral_code: str | None
+
+
+class ServiceProfileResponse(UserProfileResponse):
+    business_profile: ServiceResponse | None = None
 
 
 class NotificationSchema(AbstractBaseModel):

@@ -1,4 +1,3 @@
-from typing import Optional
 from fastapi import APIRouter, Depends, UploadFile, status
 from src.models.token_models import AccessTokenData
 from src.services import profile_service

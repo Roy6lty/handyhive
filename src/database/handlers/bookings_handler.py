@@ -24,10 +24,10 @@ async def create_booking(
     await db_conn.commit()
     await db_conn.refresh(new_bookings)
 
-    return orm_models.BookingsTableModel.model_validate(new_bookings.as_dict())
+    return orm_models.CustomerBookingsTableModel.model_validate(new_bookings.as_dict())
 
 
-async def get_booking_by_id(db_conn: db_dependency, booking_id: UUID):
+async def get_customer_booking_by_id(db_conn: db_dependency, booking_id: UUID):
     query = (
         select(user_orm.BookingsTable)
         .where(user_orm.BookingsTable.id == booking_id)
@@ -36,7 +36,21 @@ async def get_booking_by_id(db_conn: db_dependency, booking_id: UUID):
     result = await db_conn.execute(query)
     found_service = result.scalar_one_or_none()
     if found_service:
-        return orm_models.BookingsTableModel.model_validate(found_service)
+        return orm_models.CustomerBookingsTableModel.model_validate(found_service)
+    else:
+        raise error.NotFoundError
+
+
+async def get_provider_booking_by_id(db_conn: db_dependency, booking_id: UUID):
+    query = (
+        select(user_orm.BookingsTable)
+        .where(user_orm.BookingsTable.id == booking_id)
+        .options(joinedload(user_orm.BookingsTable.service_provider))
+    )
+    result = await db_conn.execute(query)
+    found_service = result.scalar_one_or_none()
+    if found_service:
+        return orm_models.ProviderBookingsTableModel.model_validate(found_service)
     else:
         raise error.NotFoundError
 
@@ -44,14 +58,16 @@ async def get_booking_by_id(db_conn: db_dependency, booking_id: UUID):
 async def get_all_bookings_service_provider(
     db_conn: db_dependency, service_provider_id: UUID
 ):
-    query = select(user_orm.BookingsTable).where(
-        user_orm.BookingsTable.service_provider_id == service_provider_id
+    query = (
+        select(user_orm.BookingsTable)
+        .where(user_orm.BookingsTable.service_provider_id == service_provider_id)
+        .options(joinedload(user_orm.BookingsTable.customer))
     )
     result = await db_conn.execute(query)
     found_services = result.scalars().all()
     if found_services:
         return [
-            orm_models.BookingsTableModel.model_validate(service)
+            orm_models.ProviderBookingsTableModel.model_validate(service)
             for service in found_services
         ]
     else:
@@ -68,7 +84,7 @@ async def get_all_bookings_customer(db_conn: db_dependency, customer_id: UUID):
     found_services = result.scalars().all()
     if found_services:
         return [
-            orm_models.BookingsTableModel.model_validate(service)
+            orm_models.CustomerBookingsTableModel.model_validate(service)
             for service in found_services
         ]
     else:
@@ -89,7 +105,9 @@ async def update_booking_by_id(
     result = await db_conn.execute(query)
     updated_service = result.scalar_one_or_none()
     if updated_service:
-        return orm_models.BookingsTableModel.model_validate(updated_service.as_dict())
+        return orm_models.CustomerBookingsTableModel.model_validate(
+            updated_service.as_dict()
+        )
     else:
         raise error.NotFoundError
 
@@ -102,13 +120,11 @@ async def get_bookings_by_customer(db_conn: db_dependency, customer_id: UUID):
     )
     result = await db_conn.execute(query)
     found_services = result.scalars().all()
-    print(found_services[0].as_dict())
     if found_services:
-        # return [
-        #     orm_models.BookingsTableModel.model_validate(service.as_dict())
-        #     for service in found_services
-        # ]
-        []
+        return [
+            orm_models.ProviderBookingsTableModel.model_validate(service.as_dict())
+            for service in found_services
+        ]
 
     else:
         return []
@@ -126,7 +142,7 @@ async def get_bookings_by_service_provider(
     found_services = result.scalars().all()
     if found_services:
         return [
-            orm_models.BookingsTableModel.model_validate(service)
+            orm_models.CustomerBookingsTableModel.model_validate(service)
             for service in found_services
         ]
     else:

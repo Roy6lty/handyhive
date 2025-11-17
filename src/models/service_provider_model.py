@@ -1,5 +1,5 @@
 from src.root.abstract_base import AbstractBaseModel
-from uuid import UUID
+import uuid
 from pydantic import field_validator, Field
 from shapely.wkb import loads
 from geoalchemy2.elements import WKBElement
@@ -27,7 +27,7 @@ class Coordinates(AbstractBaseModel):
 
 class CreateLocation(AbstractBaseModel):
     coordinates: Coordinates
-    service_provider_id: UUID
+    service_provider_id: uuid.UUID
 
 
 class CreateService(AbstractBaseModel):
@@ -35,7 +35,9 @@ class CreateService(AbstractBaseModel):
     bio: str | None = None
     category: list[str]
     zip_code: str | None = None
-    opening_hours: dict[str, dict] = Field(
+    catalogue_pic: list[str] | None = None
+    opening_hours: dict[str, dict] | None = Field(
+        None,
         examples=[
             {
                 "opening_hours": {
@@ -48,41 +50,91 @@ class CreateService(AbstractBaseModel):
                     "Sunday": {"open": None, "close": None},
                 }
             }
-        ]
+        ],
     )  # day: opening time
-    address: list[Address]
-    services_provided: dict | list = Field(
+    address: list[Address] | None = None
+    services_provided: dict | list | None = Field(
+        None,
+        examples=[
+            [
+                {
+                    "id": "0b27f6a7-22b9-4b1e-bae0-0358428fa355",
+                    "name": "Oil Change",
+                    "price": 5000,
+                },
+                {
+                    "id": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+                    "name": "Engine Diagnostics",
+                    "price": 150000,
+                },
+                {
+                    "id": "9c858901-8a57-4791-81fe-4c455b099bc9",
+                    "name": "Fuel Injection Service",
+                    "price": 90000,
+                },
+                {
+                    "id": "a2b4c5d6-e7f8-4901-9abc-1234567890de",
+                    "name": "Timing Belt Replacement",
+                    "price": 1000,
+                },
+            ]
+        ],
+    )
+
+
+class UpdateServices(AbstractBaseModel):
+    name: str | None = None
+    category: str | None = None
+    bio: str | None = None
+    profile_pic: str | None = None
+    zip_code: str | None = None
+    catalogue_pic: list[str] | None = None
+    opening_hours: dict[str, dict] | None = Field(
+        None,
         examples=[
             {
-                "services_provided": [
-                    {
-                        "id": "0b27f6a7-22b9-4b1e-bae0-0358428fa355",
-                        "name": "Oil Change",
-                        "price": 5000,
-                    },
-                    {
-                        "id": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
-                        "name": "Engine Diagnostics",
-                        "price": 150000,
-                    },
-                    {
-                        "id": "9c858901-8a57-4791-81fe-4c455b099bc9",
-                        "name": "Fuel Injection Service",
-                        "price": 90000,
-                    },
-                    {
-                        "id": "a2b4c5d6-e7f8-4901-9abc-1234567890de",
-                        "name": "Timing Belt Replacement",
-                        "price": 1000,
-                    },
-                ]
+                "Monday": {"open": "09:00", "close": "17:00"},
+                "Tuesday": {"open": "09:00", "close": "17:00"},
+                "Wednesday": {"open": "09:00", "close": "17:00"},
+                "Thursday": {"open": "09:00", "close": "17:00"},
+                "Friday": {"open": "09:00", "close": "17:00"},
+                "Saturday": {"open": "10:00", "close": "14:00"},
+                "Sunday": {"open": None, "close": None},
             }
-        ]
+        ],
+    )  # day: opening time
+    address: list[Address] | None = None
+    services_provided: dict | list | None = Field(
+        None,
+        examples=[
+            [
+                {
+                    "id": "0b27f6a7-22b9-4b1e-bae0-0358428fa355",
+                    "name": "Oil Change",
+                    "price": 5000,
+                },
+                {
+                    "id": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+                    "name": "Engine Diagnostics",
+                    "price": 150000,
+                },
+                {
+                    "id": "9c858901-8a57-4791-81fe-4c455b099bc9",
+                    "name": "Fuel Injection Service",
+                    "price": 90000,
+                },
+                {
+                    "id": "a2b4c5d6-e7f8-4901-9abc-1234567890de",
+                    "name": "Timing Belt Replacement",
+                    "price": 1000,
+                },
+            ]
+        ],
     )
 
 
 class ServiceResponse(AbstractBaseModel):
-    id: UUID
+    id: uuid.UUID
     name: str
     bio: str | None = None
     category: list | None
@@ -94,6 +146,7 @@ class ServiceResponse(AbstractBaseModel):
     catalogue_pic: list | None
     rating: float | None
     address: list | None
+    online_status: bool | None
     tags: list | None
     verified: bool = False
     date_created: datetime
@@ -119,19 +172,43 @@ class SearchServices(AbstractBaseModel):
     location: str | None = None
 
 
-class UpdateServices(AbstractBaseModel):
-    name: str | None = None
-    opening_hours: dict | None = None
-    profile_pic: str | None = None
-    address: Address | None = None
-    catalogue_pic: list[str] | None = None
-    services_provided: dict | None = None  # catetory: list of services
-    tags: list = []
-
-
 class UpdateVerifiedStatus(AbstractBaseModel):
     verified: bool
 
 
 class UpdateServiceProvider(UpdateServices):
     verified: bool | None = None
+    online_status: bool | None = None
+
+
+class UpdateOnlineStatus(AbstractBaseModel):
+    online_status: bool | None = None
+
+
+class CustomerProfileResponse(AbstractBaseModel):
+    id: uuid.UUID
+    first_name: str
+    last_name: str
+    phone_no: str
+    email: str
+    country_code: str
+    address: list[dict] | None
+    social_links: list[dict] | None
+    profile_pic: str | None
+
+
+class ProviderBookingResponse(AbstractBaseModel):
+    id: uuid.UUID
+    customer_id: uuid.UUID
+    service_provider_id: uuid.UUID
+    price: int | None = 0
+    description: str | None
+    services_requested: dict | list
+    rating: int | None
+    review: str | None
+    date_created: datetime
+    last_updated: datetime
+    address: dict | None
+    scheduled_date: datetime | None
+    status: str | None = None
+    customer: CustomerProfileResponse | dict | None = None

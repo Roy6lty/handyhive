@@ -1,8 +1,8 @@
-import time
+import uuid
 from enum import StrEnum
 from typing import Annotated, Any
 
-from pydantic import UUID4, Field, StringConstraints, field_validator, model_validator
+from pydantic import UUID4, StringConstraints, field_validator
 from sqlalchemy import UUID
 from typing_extensions import TypedDict
 
@@ -35,42 +35,32 @@ class RolePermission(AbstractBaseModel):
     permissions: list[Roles]
 
 
-# RoleSetterSchema = {
-#     "general": RolePermission(
-#         role=Roles.staff, permissions=[Roles.super_admin, Roles.admin, Roles.staff]
-#     ),
-#     "record_creation": RolePermission(
-#         role=Roles.staff, permissions=[Roles.super_admin, Roles.admin, Roles.staff]
-#     ),
-#     "record_access": RolePermission(
-#         role=Roles.staff, permissions=[Roles.super_admin, Roles.admin, Roles.staff]
-#     ),
-#     "custom_access": RolePermission(role=Roles.user, permissions=[]),
-#     "admin": RolePermission(
-#         role=Roles.admin, permissions=[Roles.super_admin, Roles.admin]
-#     ),
-#     "super_admin": RolePermission(
-#         role=Roles.super_admin, permissions=[Roles.super_admin]
-#     ),
-# }
-
-
 class AccountData(TypedDict):
     id: UUID
     is_active: bool
     first_name: str
     last_name: str
     role: str
+    service_provider_id: UUID | None
 
 
 class AccessTokenEncode(AbstractBaseModel):
-    id: str
+    id: str | uuid.UUID
     is_active: bool
     role: Roles
+    service_provider_id: str | None = None
 
     @field_validator("id", mode="before")
     @classmethod
     def convert_to_str(cls, value: Any) -> str | None:
+        if value is None:
+            return None
+        value = str(value)
+        return value.strip()
+
+    @field_validator("service_provider_id", mode="before")
+    @classmethod
+    def id_to_str(cls, value: Any) -> str | None:
         if value is None:
             return None
         value = str(value)
@@ -93,6 +83,14 @@ class AccessTokenData(AbstractBaseModel):
     id: UUID4
     is_active: bool
     role: str
+    service_provider_id: UUID4 | None
+
+
+class ProviderAccessTokenData(AbstractBaseModel):
+    id: UUID4
+    is_active: bool
+    role: str
+    service_provider_id: UUID4
 
 
 class RefreshTokenData(AccessTokenData):

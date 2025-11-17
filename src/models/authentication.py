@@ -21,6 +21,7 @@ class LoginResponse(AbstractBaseModel):
     account_type: str
     is_active: bool
     role: user_model.Roles
+    verified: bool = False
 
 
 class LoginSchema(AbstractBaseModel):

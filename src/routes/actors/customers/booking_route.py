@@ -38,7 +38,9 @@ async def get_bookings_by_customer_provider(
     description="Get bookings by id",
 )
 async def get_bookings_by_id(db_conn: db_dependency, id: uuid.UUID):
-    return await booking_service.get_booking_by_id(db_conn=db_conn, booking_id=id)
+    return await booking_service.get_customer_booking_by_id(
+        db_conn=db_conn, booking_id=id
+    )
 
 
 @router.patch("/bookings/{id}", description="Update Bookings")

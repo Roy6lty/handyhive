@@ -4,12 +4,19 @@ from fastapi import HTTPException
 
 from src.root.database import db_dependency
 from src.database.handlers import bookings_handler, invoice_handler
-from src.models import bookings_model, invoice_models
+from src.models import bookings_model, invoice_models, service_provider_model
 from src.custom_exceptions import error
 
 
-async def get_booking_by_id(booking_id: uuid.UUID, db_conn: db_dependency):
-    booking = await bookings_handler.get_booking_by_id(
+async def get_customer_booking_by_id(booking_id: uuid.UUID, db_conn: db_dependency):
+    booking = await bookings_handler.get_customer_booking_by_id(
+        booking_id=booking_id, db_conn=db_conn
+    )
+    return bookings_model.BookingResponse.model_validate(booking)
+
+
+async def get_provider_booking_by_id(booking_id: uuid.UUID, db_conn: db_dependency):
+    booking = await bookings_handler.get_provider_booking_by_id(
         booking_id=booking_id, db_conn=db_conn
     )
     return bookings_model.BookingResponse.model_validate(booking)
@@ -50,9 +57,13 @@ async def update_bookings(
 async def get_all_bookings_service_provider(
     db_conn: db_dependency, service_provider_id: uuid.UUID
 ):
-    return await bookings_handler.get_all_bookings_service_provider(
+
+    result = await bookings_handler.get_all_bookings_service_provider(
         db_conn=db_conn, service_provider_id=service_provider_id
     )
+    return [
+        service_provider_model.ProviderBookingResponse.model_validate(x) for x in result
+    ]
 
 
 async def get_all_bookings_customer(db_conn: db_dependency, customer_id: uuid.UUID):

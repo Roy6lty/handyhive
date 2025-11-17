@@ -4,8 +4,9 @@ import time
 from fastapi import HTTPException, Request, status
 from uuid import UUID
 
+
 from src.models import token_models
-from src.database.handlers import user_handler
+from src.database.handlers import user_handler, service_provider_handler
 from src.models import user_model, email_model, authentication
 from passlib.context import CryptContext
 from src.root.database import db_dependency
@@ -63,8 +64,19 @@ async def authenticate_user(db_conn: db_dependency, login: authentication.LoginS
 
 async def login_response(user: orm_models.UserTableModel, db_conn: db_dependency):
 
+    service_provider_id = None
+    verified = False
+    if user.account_type == user_model.AccountType.service_provider:
+        service_provider = await service_provider_handler.get_service_by_user_id(
+            db_conn=db_conn, user_id=user.id
+        )
+        service_provider_id = service_provider.id
+        verified = service_provider.verified
     access_token_data = token_models.AccessTokenEncode(
-        id=str(user.id), is_active=user.is_active, role=user.role
+        id=str(user.id),
+        is_active=user.is_active,
+        role=user.role,
+        service_provider_id=service_provider_id,
     )
 
     access_token = token_service.create_access_token(access_token_data.model_dump())
@@ -87,6 +99,7 @@ async def login_response(user: orm_models.UserTableModel, db_conn: db_dependency
         role=user.role,
         is_active=user.is_active,
         account_type=user.account_type,
+        verified=verified,
     )
 
 
@@ -117,9 +130,19 @@ async def token(
 ):
     login_data = authentication.LoginSchema(email=email, password=password)
     user_data = await authenticate_user(db_conn=db_conn, login=login_data)
-    token_model: token_models.AccessTokenEncode = (
-        token_models.AccessTokenEncode.model_validate(user_data)
+    service_provider_id = None
+    if user_data.account_type == user_model.AccountType.service_provider:
+        service_provider = await service_provider_handler.get_service_by_user_id(
+            db_conn=db_conn, user_id=user_data.id
+        )
+        service_provider_id = service_provider.id
+    token_model = token_models.AccessTokenEncode(
+        id=str(user_data.id),
+        is_active=user_data.is_active,
+        role=user_data.role,
+        service_provider_id=service_provider_id,
     )
+
     token_data = token_model.model_dump()
     access_token = token_service.create_access_token(
         token_data=token_data,

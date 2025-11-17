@@ -23,6 +23,19 @@ def get_user_verification_service(
     return token_data
 
 
+def get_business_verification_service(
+    token: Annotated[str, Depends(get_user_verification_service)],
+) -> token_models.ProviderAccessTokenData:
+    """
+    Dependency to get the current business user's data from the access token.
+    Raises HTTPException if the token is invalid or expired.
+    """
+    token_data = token_models.ProviderAccessTokenData.model_validate(token)
+    if token_data.service_provider_id:
+        return token_data
+    raise HTTPException(status_code=403, detail="User is not a service provider")
+
+
 async def get_user_verification_service_ws(
     websocket: WebSocket,
     query_param_token: Optional[str] = Query(None, alias="token"),

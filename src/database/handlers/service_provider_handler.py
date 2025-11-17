@@ -65,8 +65,7 @@ async def get_service_by_user_id(db_conn: db_dependency, user_id: UUID):
     result = await db_conn.execute(service)
     found_service = result.scalar_one_or_none()
     if found_service:
-
-        orm_models.ServiceProviderTableModel.model_validate(found_service)
+        return orm_models.ServiceProviderTableModel.model_validate(found_service)
 
     else:
         raise error.NotFoundError
@@ -82,6 +81,7 @@ async def update_service_by_id(
         values_json["category"] = list(values_json["services_provided"].keys())
     else:
         values_json = values.model_dump(exclude_unset=True)
+
     query = (
         update(user_orm.ServiceProviderTable)
         .where(user_orm.ServiceProviderTable.id == service_id)
@@ -91,7 +91,8 @@ async def update_service_by_id(
     result = await db_conn.execute(query)
     updated_service = result.scalar_one_or_none()
     if updated_service:
-        return orm_models.ServiceProviderTableModel.model_validate(updated_service)
+        await db_conn.commit()
+        return None
     else:
         raise error.NotFoundError
 

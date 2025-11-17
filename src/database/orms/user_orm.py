@@ -36,7 +36,7 @@ class UserTable(AbstractBase):
     first_name: Mapped[str] = mapped_column(String, nullable=True)
     last_name: Mapped[str] = mapped_column(String, nullable=True)
     referral_code: Mapped[str] = mapped_column(String, nullable=True)
-    address: Mapped[str] = mapped_column(ARRAY(JSONB), nullable=True)
+    address: Mapped[str] = mapped_column(JSONB, nullable=True)
     phone_no: Mapped[str] = mapped_column(String, nullable=True)
     country_code: Mapped[str] = mapped_column(String, nullable=True)
     social_links: Mapped[str] = mapped_column(JSONB, nullable=True)
@@ -58,6 +58,7 @@ class UserTable(AbstractBase):
     business_profile: Mapped["ServiceProviderTable"] = relationship(
         back_populates="user"
     )
+    bookings: Mapped["BookingsTable"] = relationship(back_populates="customer")
 
     __table_args__ = (
         Index(
@@ -81,7 +82,6 @@ class ServiceProviderTable(AbstractBase):
     address: Mapped[str] = mapped_column(JSONB, nullable=True)
     category: Mapped[str] = mapped_column(ARRAY(String), nullable=True)
     zip_code: Mapped[str] = mapped_column(String, nullable=True)
-    # closing_hours: Mapped[str] = mapped_column(String, nullable=True)
     opening_hours: Mapped[str] = mapped_column(JSONB, nullable=True)
     services_provided: Mapped[dict] = mapped_column(JSONB, nullable=True)
     is_active: Mapped[bool] = mapped_column(Boolean, default=False)
@@ -91,6 +91,7 @@ class ServiceProviderTable(AbstractBase):
     review: Mapped[str] = mapped_column(String, nullable=True)
     tags: Mapped[List[str]] = mapped_column(ARRAY(String), nullable=True)
     location: Mapped[list["LocationTable"]] = relationship(back_populates="provider")
+    online_status: Mapped[bool] = mapped_column(Boolean, default=False, nullable=True)
     verified: Mapped[bool] = mapped_column(Boolean, default=False)
     bookings: Mapped["BookingsTable"] = relationship(back_populates="service_provider")
     user: Mapped["UserTable"] = relationship(back_populates="business_profile")
@@ -125,14 +126,12 @@ class LocationTable(AbstractBase):
         Index(
             "idx_location_id",  # Index name
             "id",
-            unique=True,  # Unique index
             postgresql_using="btree",  # PostgreSQL specific index type
         ),
         Index("idx_location_geom", "coordinates", postgresql_using="gist"),
         Index(
             "idx_service_provider_id",  # Index name
             "service_provider_id",
-            unique=True,  # Unique index
             postgresql_using="btree",  # PostgreSQL specific index type
         ),
     )
@@ -189,7 +188,7 @@ class BookingsTable(AbstractBase):
     id: Mapped[UUID] = mapped_column(
         UUID(as_uuid=True), primary_key=True, default=uuid4
     )
-    customer_id: Mapped[UUID] = mapped_column(UUID(as_uuid=True), nullable=True)
+    customer_id: Mapped[UUID] = mapped_column(ForeignKey(UserTable.id), nullable=True)
     service_provider_id: Mapped[UUID] = mapped_column(
         ForeignKey(ServiceProviderTable.id), nullable=True
     )
@@ -207,6 +206,7 @@ class BookingsTable(AbstractBase):
     service_provider: Mapped["ServiceProviderTable"] = relationship(
         back_populates="bookings"
     )
+    customer: Mapped["UserTable"] = relationship(back_populates="bookings")
     status: Mapped[str] = mapped_column(String, nullable=True)
 
 

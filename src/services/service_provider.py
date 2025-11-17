@@ -2,6 +2,7 @@ import uuid
 from uuid import UUID
 
 from fastapi import HTTPException, UploadFile
+from src.models import responses
 from src.database.handlers import bookings_handler
 from src.models.user_model import ServiceProfileResponse
 from src.database.handlers import service_provider_handler, user_handler
@@ -48,6 +49,27 @@ async def search_service_providers_by_location_and_category(
     )
 
     return service_providers
+
+
+async def upload_pictures(catalogue: list[UploadFile]):
+    ALLOWED_IMAGE_TYPES = {
+        "image/jpeg",
+        "image/jpg",
+        "image/png",
+        "image/webp",
+    }
+    new_images = []
+    for pic in catalogue:
+        if pic.content_type not in ALLOWED_IMAGE_TYPES:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Invalid file type: {pic.content_type}. Only images are allowed.",
+            )
+        uploaded_profile = await cloudinary_service.upload_single_file(pic)
+
+        if uploaded_profile:
+            new_images.append(uploaded_profile)
+    return new_images
 
 
 async def update_catalogue_picture(
@@ -107,19 +129,30 @@ async def get_business_profile(db_conn: db_dependency, user_id: UUID):
     return ServiceProfileResponse.model_validate(service_provider)
 
 
-async def update_verfied_status(
+async def update_verified_status(
     db_conn: db_dependency, service_provider_id: UUID, verified: bool
 ):
     updates = service_provider_model.UpdateServiceProvider(verified=verified)
     try:
-        updated_service_provider = await service_provider_handler.update_service_by_id(
+        _ = await service_provider_handler.update_service_by_id(
             db_conn=db_conn, service_id=service_provider_id, values=updates
         )
-        return service_provider_model.ServiceResponse.model_validate(
-            updated_service_provider
-        )
+        return responses.SuccessfulResponse()
     except error.NotFoundError:
         raise HTTPException(status_code=404, detail="service provider not found")
+
+
+async def update_online_status(
+    db_conn: db_dependency,
+    service_provider_id: UUID,
+    values: service_provider_model.UpdateOnlineStatus,
+):
+    updates = service_provider_model.UpdateServiceProvider.model_validate(values)
+    print(updates)
+    _ = await service_provider_handler.update_service_by_id(
+        db_conn=db_conn, service_id=service_provider_id, values=updates
+    )
+    return responses.SuccessfulResponse()
 
 
 async def update_service_provider_by_id(
@@ -127,7 +160,9 @@ async def update_service_provider_by_id(
     service_provider_id: UUID,
     values: service_provider_model.UpdateServices,
 ):
-    updates = service_provider_model.UpdateServiceProvider(**values.model_dump())
+    updates = service_provider_model.UpdateServiceProvider(
+        **values.model_dump(exclude_unset=True)
+    )
 
     updated_service_provider = await service_provider_handler.update_service_by_id(
         db_conn=db_conn, service_id=service_provider_id, values=updates
